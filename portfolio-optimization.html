@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Optimization: Building Efficient Investment Strategies</title>
+    <style>
+        :root {
+            --primary-color: #2a5298;
+            --secondary-color: #4d7cc7;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --success-color: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding-bottom: 3rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary-color);
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+        
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: var(--dark-gray);
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .author-details {
+            font-size: 0.9rem;
+        }
+        
+        .author-name {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+        
+        .publish-date {
+            color: var(--dark-gray);
+        }
+        
+        .image-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        
+        .caption {
+            margin-top: 0.8rem;
+            color: var(--dark-gray);
+            font-style: italic;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .highlight-box {
+            background-color: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 2rem 0;
+        }
+        
+        .highlight-box h3 {
+            margin-top: 0;
+        }
+        
+        .code-block {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .conclusion {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .asset-explanation {
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-insight {
+            border-left: 4px solid var(--success-color);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .figure-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .figure-col {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            h3 {
+                font-size: 1.2rem;
+            }
+            
+            .lead {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Portfolio Optimization: Building Efficient Investment Strategies</h1>
+            <p class="lead">Using Modern Portfolio Theory to create data-driven investment allocations across different risk profiles</p>
+            
+            <div class="author-info">
+                <div class="author-avatar">A</div>
+                <div class="author-details">
+                    <div class="author-name">Aleksander</div>
+                    <div class="publish-date">March 3, 2025 · 12 min read</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <p>
+            Portfolio optimization is the scientific approach to creating the most efficient mix of assets to achieve the best possible returns for a given level of risk. It's a cornerstone of modern investment management, and understanding its principles can give investors a significant edge in navigating financial markets.
+        </p>
+        
+        <p>
+            In this article, I'll walk through the process of building a comprehensive portfolio optimization model from scratch using Python. We'll explore real-world data from a diverse set of ETFs, apply Modern Portfolio Theory principles, and create portfolios tailored to different risk tolerances.
+        </p>
+        
+        <h2>Understanding the Assets</h2>
+        
+        <p>
+            For our analysis, we selected seven ETFs that represent different asset classes and market segments:
+        </p>
+        
+        <div class="asset-explanation">
+            <h3>SPY - SPDR S&P 500 ETF Trust</h3>
+            <p>Tracks the S&P 500 index, representing large-cap U.S. equities. It's considered a core holding for many investors and serves as a benchmark for the broader U.S. stock market.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>QQQ - Invesco QQQ Trust</h3>
+            <p>Tracks the Nasdaq-100 Index, focused on the largest non-financial companies listed on the Nasdaq. It has a significant technology sector weighting and tends to be more growth-oriented.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>AGG - iShares Core U.S. Aggregate Bond ETF</h3>
+            <p>Provides broad exposure to U.S. investment-grade bonds, including Treasury, government agency, corporate, and mortgage-backed securities. It represents the fixed-income portion of our portfolio.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>GLD - SPDR Gold Shares</h3>
+            <p>Tracks the price of gold bullion. Gold is often considered a hedge against inflation and market uncertainty, potentially providing portfolio diversification benefits.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>VNQ - Vanguard Real Estate ETF</h3>
+            <p>Offers exposure to U.S. real estate investment trusts (REITs) and other real estate-related investments, representing the real estate sector in our portfolio.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>VEA - Vanguard FTSE Developed Markets ETF</h3>
+            <p>Provides exposure to large and mid-cap companies in developed markets outside the U.S., adding international diversification to our portfolio.</p>
+        </div>
+        
+        <div class="asset-explanation">
+            <h3>VWO - Vanguard FTSE Emerging Markets ETF</h3>
+            <p>Focuses on large and mid-cap companies in emerging market countries, offering exposure to potentially higher-growth economies.</p>
+        </div>
+        
+        <h2>Performance Analysis</h2>
+        
+        <p>
+            To understand our assets' behavior, we first analyzed their historical price data from January 2018 to March 2025. This period captures various market cycles, including the COVID-19 crash and subsequent recovery.
+        </p>
+        
+        <div class="image-container">
+            <img src="Figure_3.png" alt="Normalized Asset Prices from 2018-2025">
+            <div class="caption">Figure 1: Normalized price performance of all assets (2018-2025)</div>
+        </div>
+        
+        <p>
+            The normalized price chart reveals several key insights:
+        </p>
+        
+        <ul>
+            <li><strong>QQQ</strong> was the top performer, with a total return of approximately 250% (18.5% annualized)</li>
+            <li><strong>SPY</strong> delivered solid performance with about 150% total return (13.5% annualized)</li>
+            <li><strong>GLD</strong> showed strong performance during market uncertainty, with about 110% total return (11% annualized)</li>
+            <li><strong>AGG</strong> provided stability but modest returns, with approximately 10% total return (1.4% annualized)</li>
+            <li>International equities (<strong>VEA</strong> and <strong>VWO</strong>) underperformed U.S. markets during this period</li>
+        </ul>
+        
+        <h2>Risk and Return Characteristics</h2>
+        
+        <p>
+            Portfolio optimization requires understanding both returns and risk (volatility). We calculated annualized returns and risks for each asset:
+        </p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Annualized Return</th>
+                    <th>Annualized Risk</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SPY</td>
+                    <td>13.50%</td>
+                    <td>19.35%</td>
+                </tr>
+                <tr>
+                    <td>QQQ</td>
+                    <td>18.46%</td>
+                    <td>24.03%</td>
+                </tr>
+                <tr>
+                    <td>AGG</td>
+                    <td>1.40%</td>
+                    <td>5.97%</td>
+                </tr>
+                <tr>
+                    <td>GLD</td>
+                    <td>10.95%</td>
+                    <td>14.30%</td>
+                </tr>
+                <tr>
+                    <td>VNQ</td>
+                    <td>5.69%</td>
+                    <td>22.75%</td>
+                </tr>
+                <tr>
+                    <td>VEA</td>
+                    <td>4.78%</td>
+                    <td>18.19%</td>
+                </tr>
+                <tr>
+                    <td>VWO</td>
+                    <td>2.43%</td>
+                    <td>20.21%</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="image-container">
+            <img src="Figure_2.png" alt="Risk vs Return Profile">
+            <div class="caption">Figure 2: Risk vs. Return profile of each asset</div>
+        </div>
+        
+        <p>
+            This visualization makes clear the risk-return tradeoffs:
+        </p>
+        
+        <div class="key-insight">
+            <p>QQQ offers the highest returns but with substantial volatility, while AGG provides stability at the cost of lower returns. SPY and GLD offer attractive middle-ground options with different risk-return profiles.</p>
+        </div>
+        
+        <h2>Understanding Asset Correlations</h2>
+        
+        <p>
+            Correlation between assets is crucial for diversification. When assets move differently from each other, combining them can reduce overall portfolio risk.
+        </p>
+        
+        <div class="image-container">
+            <img src="Figure_1.png" alt="Asset Correlation Matrix">
+            <div class="caption">Figure 3: Correlation matrix showing relationships between assets</div>
+        </div>
+        
+        <p>
+            The correlation matrix reveals important relationships:
+        </p>
+        
+        <ul>
+            <li><strong>Strong correlation (0.93)</strong> between SPY and QQQ, indicating limited diversification benefits between these two</li>
+            <li><strong>Low correlation (0.14)</strong> between AGG and equity ETFs, making bonds excellent diversifiers</li>
+            <li><strong>Moderate correlation (0.11-0.22)</strong> between GLD and equity ETFs, suggesting gold provides diversification benefits</li>
+            <li><strong>High correlation (0.7-0.87)</strong> among international and U.S. equities, indicating global equity markets often move together</li>
+        </ul>
+        
+        <h2>Efficient Frontier and Optimal Portfolios</h2>
+        
+        <p>
+            Using Modern Portfolio Theory, we can identify the set of optimal portfolios that offer the highest expected return for a given level of risk. This set forms the "efficient frontier."
+        </p>
+        
+        <div class="image-container">
+            <img src="Figure_4.png" alt="Portfolio Optimization Efficient Frontier">
+            <div class="caption">Figure 4: The efficient frontier with optimal portfolios highlighted</div>
+        </div>
+        
+        <p>
+            On this frontier, two portfolios are particularly important:
+        </p>
+        
+        <div class="highlight-box">
+            <h3>Maximum Sharpe Ratio Portfolio</h3>
+            <p>This portfolio offers the best risk-adjusted return, with an annualized return of 13.96% and volatility of 13.64%. It consists of:</p>
+            <ul>
+                <li>QQQ: 40.0%</li>
+                <li>GLD: 60.0%</li>
+            </ul>
+            <p>Sharpe Ratio: 0.88</p>
+        </div>
+        
+        <div class="highlight-box">
+            <h3>Minimum Volatility Portfolio</h3>
+            <p>This portfolio minimizes overall risk, with an annualized return of 2.06% and volatility of just 5.88%. It consists of:</p>
+            <ul>
+                <li>AGG: 92.8%</li>
+                <li>SPY: 3.9%</li>
+                <li>GLD: 1.8%</li>
+                <li>VWO: 1.4%</li>
+            </ul>
+            <p>Sharpe Ratio: 0.01</p>
+        </div>
+        
+        <h2>Portfolios for Different Risk Profiles</h2>
+        
+        <p>
+            In practice, investors have different risk tolerances. We created portfolios for conservative, balanced, and aggressive investors:
+        </p>
+        
+        <div class="figure-row">
+            <div class="figure-col">
+                <div class="image-container">
+                    <img src="Figure_5.png" alt="Asset Allocation by Risk Profile">
+                    <div class="caption">Figure 5: Asset allocation comparison across risk profiles</div>
+                </div>
+            </div>
+            <div class="figure-col">
+                <div class="image-container">
+                    <img src="Figure_6.png" alt="Portfolio Allocations Pie Charts">
+                    <div class="caption">Figure 6: Detailed allocation pie charts for each portfolio</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Conservative Portfolio</h3>
+        <p>
+            Designed for investors prioritizing capital preservation with modest growth potential:
+        </p>
+        <ul>
+            <li>AGG: 72.1% - Provides stability and income</li>
+            <li>GLD: 15.3% - Offers inflation protection and diversification</li>
+            <li>SPY: 11.6% - Adds growth potential</li>
+            <li>QQQ: 1.0% - Small allocation to higher-growth assets</li>
+        </ul>
+        <p>Expected return: 4.44% | Volatility: 6.36%</p>
+        
+        <h3>Balanced Portfolio</h3>
+        <p>
+            Designed for investors seeking moderate growth with reasonable volatility:
+        </p>
+        <ul>
+            <li>AGG: 44.7% - Core stability component</li>
+            <li>GLD: 33.8% - Significant diversification element</li>
+            <li>QQQ: 15.7% - Growth driver</li>
+            <li>SPY: 5.8% - Additional equity exposure</li>
+        </ul>
+        <p>Expected return: 8.01% | Volatility: 8.52%</p>
+        
+        <h3>Aggressive Portfolio</h3>
+        <p>
+            Designed for growth-oriented investors comfortable with higher volatility:
+        </p>
+        <ul>
+            <li>GLD: 52.3% - Substantial allocation for both returns and diversification</li>
+            <li>QQQ: 30.3% - Core growth driver</li>
+            <li>AGG: 17.3% - Reduced but still significant stability component</li>
+            <li>SPY: 0.1% - Minimal allocation due to QQQ's stronger performance</li>
+        </ul>
+        <p>Expected return: 11.58% | Volatility: 11.46%</p>
+        
+        <div class="key-insight">
+            <p>The optimal portfolios consistently leverage AGG for stability, QQQ for growth, and GLD for both returns and diversification. International ETFs (VEA, VWO) and real estate (VNQ) were largely excluded from optimal portfolios due to their unfavorable risk-return profiles during this period.</p>
+        </div>
+        
+        <h2>Implementation in Python</h2>
+        
+        <p>
+            This analysis was performed using Python with key libraries including pandas, numpy, matplotlib, and scipy. The optimization used Modern Portfolio Theory principles to maximize the Sharpe ratio (for the maximum Sharpe ratio portfolio) and minimize volatility (for the minimum volatility portfolio).
+        </p>
+        
+        <div class="code-block">
+            <pre>
+# Function to calculate portfolio performance
+def portfolio_performance(weights, mean_returns, cov_matrix):
+    returns = np.sum(mean_returns * weights)
+    std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+    return std, returns
+
+# Function to calculate negative Sharpe Ratio (for minimization)
+def negative_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate=0.02):
+    p_std, p_ret = portfolio_performance(weights, mean_returns, cov_matrix)
+    sharpe = (p_ret - risk_free_rate) / p_std
+    return -sharpe
+
+# Function to calculate portfolio volatility
+def portfolio_volatility(weights, mean_returns, cov_matrix):
+    return portfolio_performance(weights, mean_returns, cov_matrix)[0]
+            </pre>
+        </div>
+        
+        <div class="conclusion">
+            <h2>Key Takeaways and Investment Implications</h2>
+            
+            <p>
+                This portfolio optimization analysis offers several important insights for investors:
+            </p>
+            
+            <ol>
+                <li>
+                    <strong>Diversification is powerful</strong> - The optimal portfolios consistently included a mix of assets with different risk-return profiles and correlations. This diversification led to better risk-adjusted returns than any single asset could provide.
+                </li>
+                <li>
+                    <strong>Asset selection matters</strong> - Not all assets made it into the optimal portfolios. The optimization naturally excluded assets with unfavorable risk-return profiles or high correlations with better-performing alternatives.
+                </li>
+                <li>
+                    <strong>Gold played a surprisingly significant role</strong> - Despite being traditionally viewed as a hedge, GLD's strong performance and moderate correlations with equities made it a core component across all risk profiles.
+                </li>
+                <li>
+                    <strong>Risk tolerance should drive allocation</strong> - The analysis demonstrates how investors with different risk preferences can construct portfolios along the efficient frontier to align with their goals.
+                </li>
+                <li>
+                    <strong>U.S. markets outperformed international markets</strong> - During this period, U.S. equities delivered superior risk-adjusted returns compared to international and emerging markets.
+                </li>
+            </ol>
+            
+            <p>
+                Modern Portfolio Theory provides a robust framework for creating diversified investment portfolios tailored to different risk preferences. By understanding the risk-return characteristics and correlations of various assets, investors can construct portfolios that maximize returns for their chosen level of risk.
+            </p>
+            
+            <p>
+                In future analyses, we could extend this work by implementing dynamic rebalancing strategies, incorporating transaction costs, exploring alternative optimization objectives, or adding additional asset classes.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
