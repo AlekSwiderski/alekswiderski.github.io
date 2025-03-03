@@ -232,7 +232,7 @@
     <header>
         <div class="container">
             <h1>Portfolio Optimization: Building Efficient Investment Strategies</h1>
-            <p class="lead">Using Modern Portfolio Theory to create data-driven investment allocations across different risk profiles</p>
+            <p class="lead">Using modern portfolio theory to create investment allocations across different risk profiles using Python</p>
             
             <div class="author-info">
                 <div class="author-avatar">A</div>
@@ -245,18 +245,19 @@
     </header>
     
     <div class="container">
+        <h2>Introduction</h2>
         <p>
-            Portfolio optimization is the scientific approach to creating the most efficient mix of assets to achieve the best possible returns for a given level of risk. It's a cornerstone of modern investment management, and understanding its principles can give investors a significant edge in navigating financial markets.
+            Portfolio optimization is the scientific approach to creating the most efficient mix of assets to achieve the best possible returns for a level of risk. Understanding its principles can give investors an edge in navigating financial markets.
         </p>
         
         <p>
-            In this article, I'll walk through the process of building a comprehensive portfolio optimization model from scratch using Python. We'll explore real-world data from a diverse set of ETFs, apply Modern Portfolio Theory principles, and create portfolios tailored to different risk tolerances.
+            I'll walk through the process of building a comprehensive portfolio optimization model from scratch using Python. I'll explore real-world data from a diverse set of ETFs, apply modern portfolio theory principles, and create portfolios for different risk tolerances.
         </p>
         
         <h2>Understanding the Assets</h2>
         
         <p>
-            For our analysis, we selected seven ETFs that represent different asset classes and market segments:
+            For my analysis, I selected seven ETFs that represent different asset classes and market segments:
         </p>
         
         <div class="asset-explanation">
@@ -271,33 +272,33 @@
         
         <div class="asset-explanation">
             <h3>AGG - iShares Core U.S. Aggregate Bond ETF</h3>
-            <p>Provides broad exposure to U.S. investment-grade bonds, including Treasury, government agency, corporate, and mortgage-backed securities. It represents the fixed-income portion of our portfolio.</p>
+            <p>Provides broad exposure to U.S. investment grade bonds, including treasury, government agency, corporate, and mortgage-backed securities. The fixed income portion of our portfolio.</p>
         </div>
         
         <div class="asset-explanation">
             <h3>GLD - SPDR Gold Shares</h3>
-            <p>Tracks the price of gold bullion. Gold is often considered a hedge against inflation and market uncertainty, potentially providing portfolio diversification benefits.</p>
+            <p>Tracks the price of gold bullion. Gold is often considered a hedge against inflation and market uncertainty, providing portfolio diversification benefits.</p>
         </div>
         
         <div class="asset-explanation">
             <h3>VNQ - Vanguard Real Estate ETF</h3>
-            <p>Offers exposure to U.S. real estate investment trusts (REITs) and other real estate-related investments, representing the real estate sector in our portfolio.</p>
+            <p>Offers exposure to US real estate investment trusts (REITs) and other real estate related investments, the real estate sector in our portfolio.</p>
         </div>
         
         <div class="asset-explanation">
             <h3>VEA - Vanguard FTSE Developed Markets ETF</h3>
-            <p>Provides exposure to large and mid-cap companies in developed markets outside the U.S., adding international diversification to our portfolio.</p>
+            <p>Provides exposure to large and mid cap companies in developed markets outside the US, international diversification for our portfolio.</p>
         </div>
         
         <div class="asset-explanation">
             <h3>VWO - Vanguard FTSE Emerging Markets ETF</h3>
-            <p>Focuses on large and mid-cap companies in emerging market countries, offering exposure to potentially higher-growth economies.</p>
+            <p>Focuses on large and mid-cap companies in emerging market countries, offering exposure to higher growth economies.</p>
         </div>
         
         <h2>Performance Analysis</h2>
         
         <p>
-            To understand our assets' behavior, we first analyzed their historical price data from January 2018 to March 2025. This period captures various market cycles, including the COVID-19 crash and subsequent recovery.
+            To understand the assets' behavior, I analyzed their historical price data from January 2018 to March 2025. This period captures various market cycles, including the COVID-19 crash and recovery.
         </p>
         
         <div class="image-container">
@@ -314,7 +315,7 @@
             <li><strong>SPY</strong> delivered solid performance with about 150% total return (13.5% annualized)</li>
             <li><strong>GLD</strong> showed strong performance during market uncertainty, with about 110% total return (11% annualized)</li>
             <li><strong>AGG</strong> provided stability but modest returns, with approximately 10% total return (1.4% annualized)</li>
-            <li>International equities (<strong>VEA</strong> and <strong>VWO</strong>) underperformed U.S. markets during this period</li>
+            <li>International equities (<strong>VEA</strong> and <strong>VWO</strong>) underperformed US markets during this period</li>
         </ul>
         
         <h2>Risk and Return Characteristics</h2>
@@ -376,17 +377,13 @@
         </div>
         
         <p>
-            This visualization makes clear the risk-return tradeoffs:
+            This visualization makes clear the risk-return tradeoffs: QQQ offers the highest returns but with substantial volatility, while AGG provides stability at the cost of lower returns. SPY and GLD offer attractive middle ground options with different risk-return profiles.
         </p>
-        
-        <div class="key-insight">
-            <p>QQQ offers the highest returns but with substantial volatility, while AGG provides stability at the cost of lower returns. SPY and GLD offer attractive middle-ground options with different risk-return profiles.</p>
-        </div>
         
         <h2>Understanding Asset Correlations</h2>
         
         <p>
-            Correlation between assets is crucial for diversification. When assets move differently from each other, combining them can reduce overall portfolio risk.
+            Correlation between assets is important for diversification. When assets move differently from each other, combining them can reduce overall portfolio risk.
         </p>
         
         <div class="image-container">
@@ -399,16 +396,16 @@
         </p>
         
         <ul>
-            <li><strong>Strong correlation (0.93)</strong> between SPY and QQQ, indicating limited diversification benefits between these two</li>
+            <li><strong>Strong correlation (0.93)</strong> between SPY and QQQ, limited diversification benefits between these two</li>
             <li><strong>Low correlation (0.14)</strong> between AGG and equity ETFs, making bonds excellent diversifiers</li>
-            <li><strong>Moderate correlation (0.11-0.22)</strong> between GLD and equity ETFs, suggesting gold provides diversification benefits</li>
-            <li><strong>High correlation (0.7-0.87)</strong> among international and U.S. equities, indicating global equity markets often move together</li>
+            <li><strong>Low to moderate correlation (0.11-0.22)</strong> between GLD and equity ETFs, gold provides diversification benefits</li>
+            <li><strong>High correlation (0.7-0.87)</strong> among international and US equities, indicating global equity markets often move together</li>
         </ul>
         
         <h2>Efficient Frontier and Optimal Portfolios</h2>
         
         <p>
-            Using Modern Portfolio Theory, we can identify the set of optimal portfolios that offer the highest expected return for a given level of risk. This set forms the "efficient frontier."
+            Using modern portfolio theory, I can identify the optimal portfolios that offer the highest expected return for a level of risk. This forms the "efficient frontier."
         </p>
         
         <div class="image-container">
@@ -445,7 +442,7 @@
         <h2>Portfolios for Different Risk Profiles</h2>
         
         <p>
-            In practice, investors have different risk tolerances. We created portfolios for conservative, balanced, and aggressive investors:
+            In practice, investors have different risk tolerances. I created portfolios for conservative, balanced, and aggressive investors:
         </p>
         
         <div class="figure-row">
@@ -500,13 +497,13 @@
         <p>Expected return: 11.58% | Volatility: 11.46%</p>
         
         <div class="key-insight">
-            <p>The optimal portfolios consistently leverage AGG for stability, QQQ for growth, and GLD for both returns and diversification. International ETFs (VEA, VWO) and real estate (VNQ) were largely excluded from optimal portfolios due to their unfavorable risk-return profiles during this period.</p>
+            <p>The optimal portfolios consistently leverage AGG for stability, QQQ for growth, and GLD for both returns and diversification. International ETFs (VEA, VWO) and real estate (VNQ) were largely excluded from optimal portfolios due to their risk-return profiles being unfavorable during this period.</p>
         </div>
         
         <h2>Implementation in Python</h2>
         
         <p>
-            This analysis was performed using Python with key libraries including pandas, numpy, matplotlib, and scipy. The optimization used Modern Portfolio Theory principles to maximize the Sharpe ratio (for the maximum Sharpe ratio portfolio) and minimize volatility (for the minimum volatility portfolio).
+            This analysis was performed using Python with libraries such as pandas, numpy, matplotlib, and scipy. The optimization used modern portfolio theory principles to maximize the sharpe ratio (for the maximum Sharpe ratio portfolio) and minimize volatility (for the minimum volatility portfolio).
         </p>
         
         <div class="code-block">
@@ -541,25 +538,25 @@ def portfolio_volatility(weights, mean_returns, cov_matrix):
                     <strong>Diversification is powerful</strong> - The optimal portfolios consistently included a mix of assets with different risk-return profiles and correlations. This diversification led to better risk-adjusted returns than any single asset could provide.
                 </li>
                 <li>
-                    <strong>Asset selection matters</strong> - Not all assets made it into the optimal portfolios. The optimization naturally excluded assets with unfavorable risk-return profiles or high correlations with better-performing alternatives.
+                    <strong>Asset selection matters</strong> - Not all assets made it into the optimal portfolios. The optimization excluded assets with unfavorable risk-return profiles or high correlations with better performing alternatives.
                 </li>
                 <li>
-                    <strong>Gold played a surprisingly significant role</strong> - Despite being traditionally viewed as a hedge, GLD's strong performance and moderate correlations with equities made it a core component across all risk profiles.
+                    <strong>Gold played a surprisingly significant role</strong> - Despite being typically viewed as a hedge, GLD's strong performance and moderate correlations with equities made it a core component across all risk profiles.
                 </li>
                 <li>
-                    <strong>Risk tolerance should drive allocation</strong> - The analysis demonstrates how investors with different risk preferences can construct portfolios along the efficient frontier to align with their goals.
+                    <strong>Risk tolerance should drive allocation</strong> - investors with different risk preferences can construct portfolios along the efficient frontier to align with their goals.
                 </li>
                 <li>
-                    <strong>U.S. markets outperformed international markets</strong> - During this period, U.S. equities delivered superior risk-adjusted returns compared to international and emerging markets.
+                    <strong>US markets outperformed international markets</strong> - During this period, US equities offered superior risk-adjusted returns compared to international and emerging markets.
                 </li>
             </ol>
             
             <p>
-                Modern Portfolio Theory provides a robust framework for creating diversified investment portfolios tailored to different risk preferences. By understanding the risk-return characteristics and correlations of various assets, investors can construct portfolios that maximize returns for their chosen level of risk.
+                Modern portfolio theory provides a great framework for creating diversified investment portfolios for different risk levels and preferences. By understanding the risk-return characteristics and correlations of various assets, investors can build portfolios that maximize returns for their chosen level of risk.
             </p>
             
             <p>
-                In future analyses, we could extend this work by implementing dynamic rebalancing strategies, incorporating transaction costs, exploring alternative optimization objectives, or adding additional asset classes.
+                In future analyses, I hope to extend this work by implementing dynamic rebalancing strategies, incorporating transaction costs, exploring alternative optimization objectives, or adding more asset classes.
             </p>
         </div>
     </div>
