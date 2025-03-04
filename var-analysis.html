@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Value at Risk (VaR) Analysis - Alek Swiderski</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        h3 {
+            color: #16a085;
+            margin-top: 25px;
+        }
+        
+        .figure-container {
+            margin: 30px 0;
+            text-align: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }
+        
+        .figure-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .project-intro {
+            background-color: #e8f4fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .code-snippet {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .code-snippet pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .method-box {
+            background-color: #f1f9ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .method-name {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        
+        .key-point {
+            background-color: #e8f8f5;
+            border-left: 4px solid #1abc9c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .implementation-note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .stress-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .stress-table th, .stress-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .stress-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .stress-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .conclusion {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Portfolio</a>
+    
+    <header>
+        <h1>Understanding Value at Risk Analysis: A Python Implementation</h1>
+    </header>
+
+    <div class="project-intro">
+        <p>This project demonstrates how Python can be used to build a comprehensive Value at Risk (VaR) analysis framework. The implementation uses popular Python libraries including NumPy, Pandas, Matplotlib, Seaborn, and SciPy to create a flexible tool for portfolio risk assessment.</p>
+        
+        <p>The code provides a complete VaR analysis pipeline with robust visualization capabilities, multiple calculation methods, backtesting, and stress testing functionality. All results shown below are generated directly from the Python implementation.</p>
+    </div>
+    
+    <h2>What is Value at Risk (VaR) and Why It Matters</h2>
+    
+    <p>In the world of investing, one of the most important questions is: "How much money could I lose?" Value at Risk (VaR) is a tool that helps answer this question by estimating the maximum amount of money you might lose over a specific time period, with a certain level of confidence.</p>
+    
+    <p>Think of VaR as a financial weather forecast - it doesn't tell you exactly what will happen, but it gives you a good idea of what to prepare for. Just as a weather report might say "there's a 95% chance it won't rain more than 2 inches tomorrow," VaR might say "there's a 95% chance you won't lose more than $1,500 from your $100,000 investment tomorrow."</p>
+    
+    <h2>What This Analysis Shows</h2>
+    
+    <p>The analysis we ran looked at a diversified portfolio worth $100,000 invested across several major assets:</p>
+    <ul>
+        <li>Tech giants (Apple, Microsoft)</li>
+        <li>Banks (JPMorgan Chase, Goldman Sachs)</li>
+        <li>A financial sector ETF (XLF)</li>
+        <li>Treasury bonds (TLT)</li>
+        <li>Gold (GLD)</li>
+    </ul>
+    
+    <p>The portfolio is diversified to help reduce risk, with weights distributed fairly evenly across these assets.</p>
+    
+    <h2>Key Findings</h2>
+    
+    <h3>1. Portfolio Performance</h3>
+    
+    <p>The portfolio has performed very well over the analyzed period (January 2021 to March 2025), growing from $100,000 to around $180,000 - an impressive 80% total return. The annual return is approximately 15.5%, which is strong compared to historical market averages.</p>
+    
+    <p>However, this growth hasn't been without volatility - the chart shows several significant dips, particularly in 2022 when the portfolio briefly dropped back to its starting value.</p>
+    
+    <div class="figure-container">
+        <img src="var_example1.png" alt="Portfolio Value Over Time Chart" />
+        <div class="figure-caption">Figure 1: Portfolio Value Over Time (Initial: $100,000) from January 2021 to March 2025</div>
+    </div>
+    
+    <h3>2. Risk Assessment</h3>
+    
+    <p>The analysis shows that on a typical day, with 95% confidence:</p>
+    <ul>
+        <li><strong>VaR (Historical method)</strong>: You wouldn't expect to lose more than about $1,509 in a single day</li>
+        <li><strong>VaR (Parametric method)</strong>: You wouldn't expect to lose more than about $1,475 in a single day</li>
+        <li><strong>VaR (Monte Carlo method)</strong>: You wouldn't expect to lose more than about $1,464 in a single day</li>
+    </ul>
+    
+    <p>All three methods are different ways to calculate the same thing, and they all arrive at similar results, which suggests the estimate is reliable. This represents about 1.5% of the total portfolio value.</p>
+    
+    <div class="figure-container">
+        <img src="var_example2.png" alt="Historical VaR with Confidence Intervals" />
+        <div class="figure-caption">Figure 2: Historical VaR with 95% Confidence Intervals, showing the distribution of daily returns</div>
+    </div>
+    
+    <h3>Understanding the Three VaR Methods</h3>
+    
+    <div class="method-box">
+        <div class="method-name">Historical Method (The "What Actually Happened" Approach)</div>
+        <p>Imagine looking through your investment's past performance and noting all the daily gains and losses. The Historical VaR essentially says: "Based on what happened in the past, on 95% of days, we didn't lose more than $1,509." It's like checking the last 100 days of weather to predict tomorrow, assuming similar patterns will continue.</p>
+    </div>
+    
+    <div class="method-box">
+        <div class="method-name">Parametric Method (The "Bell Curve" Approach)</div>
+        <p>This method assumes investment returns follow a bell-shaped curve (normal distribution). After calculating the average return and how much returns typically vary (standard deviation), it uses statistical formulas to estimate the worst-case scenario at your specified confidence level. It's like knowing the average rainfall and typical variation to predict the maximum rainfall tomorrow with 95% confidence.</p>
+    </div>
+    
+    <div class="method-box">
+        <div class="method-name">Monte Carlo Method (The "What If" Simulator)</div>
+        <p>This approach runs thousands of simulations of possible future scenarios based on the investment's statistical properties. Imagine rolling dice 10,000 times to see all possible outcomes. The Monte Carlo method creates thousands of possible "alternate universes" for your portfolio and then identifies the loss threshold that is only exceeded in 5% of these simulations.</p>
+    </div>
+    
+    <h3>3. Backtesting Results</h3>
+    
+    <p>The VaR models were tested against historical data to see if they're accurate. The results show:</p>
+    <ul>
+        <li>The historical method predicted that losses would exceed the VaR threshold about 5% of the time, and in reality, it happened 4.88% of the time</li>
+        <li>The parametric and Monte Carlo methods both had breaches 5.66% of the time versus the expected 5%</li>
+    </ul>
+    
+    <p>These results are very close to expectations, and all methods passed the Kupiec test (a statistical test to verify the model's accuracy).</p>
+    
+    <h3>4. VaR Changes Over Time</h3>
+    
+    <p>The analysis also tracks how risk levels have changed throughout the analysis period.</p>
+    
+    <div class="figure-container">
+        <img src="var_example3.png" alt="Historical VaR over Time" />
+        <div class="figure-caption">Figure 3: Historical VaR over Time (95% Confidence), showing how the maximum expected daily loss has changed</div>
+    </div>
+    
+    <div class="key-point">
+        <p>An interesting observation from this chart is that VaR was much higher during 2022-2023 (around $2,000-$2,200) than it is in early 2025 (around $1,200). This means that even though the portfolio value has grown substantially, the daily risk has actually decreased - a positive sign for the investment strategy.</p>
+    </div>
+    
+    <h3>5. Stress Testing</h3>
+    
+    <p>The analysis also shows what would happen to this portfolio during extreme market events:</p>
+    
+    <table class="stress-table">
+        <thead>
+            <tr>
+                <th>Scenario</th>
+                <th>Portfolio Impact</th>
+                <th>Remaining Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>2008 Financial Crisis</td>
+                <td>-45% ($45,000)</td>
+                <td>$55,000</td>
+            </tr>
+            <tr>
+                <td>2020 COVID Crash</td>
+                <td>-35% ($35,000)</td>
+                <td>$65,000</td>
+            </tr>
+            <tr>
+                <td>Tech Bubble Burst</td>
+                <td>-30% ($30,000)</td>
+                <td>$70,000</td>
+            </tr>
+            <tr>
+                <td>Moderate Recession</td>
+                <td>-25% ($25,000)</td>
+                <td>$75,000</td>
+            </tr>
+            <tr>
+                <td>2018 December Selloff</td>
+                <td>-20% ($20,000)</td>
+                <td>$80,000</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Python Implementation Overview</h2>
+
+    <p>This VaR analysis tool is implemented as a Python class called <code>VaRAnalysis</code> that provides a comprehensive framework for assessing portfolio risk. Here's a look at the key components:</p>
+    
+    <h3>Key Features of the Python Implementation</h3>
+    
+    <ul>
+        <li><strong>Data Acquisition:</strong> Automatic download of historical price data using Yahoo Finance API</li>
+        <li><strong>Multiple VaR Methods:</strong> Implementation of historical, parametric, and Monte Carlo approaches</li>
+        <li><strong>Backtesting Framework:</strong> Statistical validation of VaR predictions</li>
+        <li><strong>Visualization Tools:</strong> Comprehensive plotting functions for returns, correlations, and VaR metrics</li>
+        <li><strong>Stress Testing:</strong> Simulations of portfolio behavior under extreme market conditions</li>
+        <li><strong>Interactive Mode:</strong> GUI interface for users who prefer not to write code</li>
+        <li><strong>Report Generation:</strong> Export capabilities for PDF and Excel</li>
+    </ul>
+    
+    <h3>Example Python Usage</h3>
+    
+    <div class="code-snippet">
+        <pre>
+# Basic usage example
+from var_analysis import VaRAnalysis
+
+# Initialize with portfolio data
+var_analysis = VaRAnalysis(
+    assets=['AAPL', 'MSFT', 'JPM', 'GS', 'XLF', 'TLT', 'GLD'],
+    weights=[0.15, 0.15, 0.15, 0.15, 0.2, 0.1, 0.1],
+    investment=100000
+)
+
+# Run comprehensive analysis
+var_analysis.run_comprehensive_analysis()
+
+# Calculate VaR using different methods
+hist_var, _ = var_analysis.historical_var(confidence_level=0.95)
+param_var, _ = var_analysis.parametric_var(confidence_level=0.95)
+mc_var, _ = var_analysis.monte_carlo_var(confidence_level=0.95)
+
+print(f"Historical VaR (95%): ${hist_var:.2f}")
+print(f"Parametric VaR (95%): ${param_var:.2f}")
+print(f"Monte Carlo VaR (95%): ${mc_var:.2f}")
+
+# Create visualizations
+var_analysis.plot_portfolio_performance()
+var_analysis.plot_var_with_ci(method='historical')
+var_analysis.plot_var_over_time(method='historical')
+</pre>
+    </div>
+    
+    <div class="implementation-note">
+        <p><strong>Technical Note:</strong> The implementation uses Pandas for data manipulation, NumPy for numerical operations, Matplotlib and Seaborn for visualization, and SciPy for statistical functions. The backtesting framework validates VaR models using the Kupiec test to ensure statistical accuracy.</p>
+    </div>
+
+    <h2>What This All Means</h2>
+    
+    <div class="conclusion">
+        <p><strong>1. Day-to-Day Risk:</strong> On a typical bad day, you might expect to lose around $1,500 (1.5% of your initial investment), but it's unlikely you'd lose more than that.</p>
+        
+        <p><strong>2. Model Reliability:</strong> The VaR models are working as expected, which means their predictions are trustworthy for this portfolio.</p>
+        
+        <p><strong>3. Balanced Risk/Return:</strong> With an annual return of 15.5% and annual volatility of 14.83%, the portfolio has a favorable risk-return profile (shown by the Sharpe ratio of 1.04, which is good).</p>
+        
+        <p><strong>4. Extreme Event Preparedness:</strong> While the day-to-day risk is relatively small, major market events could cause substantial losses. However, over the analyzed period, the portfolio recovered from dips and continued to grow.</p>
+        
+        <p><strong>Bottom Line:</strong> This VaR analysis gives us a way to quantify investment risk in concrete dollar terms. It tells us that this particular portfolio has been performing well with manageable day-to-day risk, but investors should still be prepared for potential significant losses during market crises. The analysis confirms that the portfolio's diversification across different types of assets (tech, banking, bonds, gold) is working as intended to balance growth with protection against excessive losses.</p>
+    </div>
+
+    <footer>
+        <p>© 2025 Alek Swiderski. All Rights Reserved.</p>
+        <p><a href="index.html" style="color: white; text-decoration: underline;">Back to Portfolio</a></p>
+    </footer>
+</body>
+</html>
