@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Value at Risk (VaR) Analysis - Alek Swiderski</title>
+    <meta name="description" content="A comprehensive Python implementation for portfolio risk assessment using Value at Risk (VaR) analysis with multiple calculation methods, backtesting, and stress testing.">
+    <meta name="keywords" content="VaR, Value at Risk, portfolio risk, Python, finance, risk management, Monte Carlo, backtesting">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
         /* Base styles */
         body {
@@ -246,7 +249,17 @@
         <div class="method-name">Monte Carlo Method (The "What If" Simulator)</div>
         <p>This approach runs thousands of simulations of possible future scenarios based on the investment's statistical properties. Imagine rolling dice 10,000 times to see all possible outcomes. The Monte Carlo method creates thousands of possible "alternate universes" for your portfolio and then identifies the loss threshold that is only exceeded in 5% of these simulations.</p>
     </div>
-    
+
+    <h3>Beyond VaR: Conditional VaR (CVaR)</h3>
+
+    <p>While VaR tells us the threshold we're unlikely to exceed, it doesn't tell us <em>how bad things could get</em> if we do exceed it. This is where <strong>Conditional VaR</strong> (also called Expected Shortfall or CVaR) comes in.</p>
+
+    <div class="method-box">
+        <div class="method-name">CVaR: The "Average Disaster" Metric</div>
+        <p>CVaR answers the question: "If we do have a bad day that exceeds our VaR threshold, how much should we expect to lose on average?" For this portfolio, while VaR at 95% confidence is around $1,500, the CVaR is typically 20-30% higher - meaning on those worst 5% of days, losses average around $1,900-2,000.</p>
+        <p><strong>Why it matters:</strong> CVaR is now required by Basel III banking regulations because it better captures "tail risk" - the risk of extreme losses. VaR can miss dangerous situations where losses beyond the threshold are catastrophic.</p>
+    </div>
+
     <h3>3. Backtesting Results</h3>
     
     <p>The VaR models were tested against historical data to see if they're accurate. The results show:</p>
@@ -328,9 +341,7 @@
     
     <h3>Example Python Usage</h3>
     
-    <div class="code-snippet">
-        <pre>
-# Basic usage example
+    <pre class="code-snippet"><code class="language-python"># Basic usage example
 from var_analysis import VaRAnalysis
 
 # Initialize with portfolio data
@@ -355,13 +366,37 @@ print(f"Monte Carlo VaR (95%): ${mc_var:.2f}")
 # Create visualizations
 var_analysis.plot_portfolio_performance()
 var_analysis.plot_var_with_ci(method='historical')
-var_analysis.plot_var_over_time(method='historical')
-</pre>
-    </div>
+var_analysis.plot_var_over_time(method='historical')</code></pre>
     
     <div class="implementation-note">
         <p><strong>Technical Note:</strong> The implementation uses Pandas for data manipulation, NumPy for numerical operations, Matplotlib and Seaborn for visualization, and SciPy for statistical functions. The backtesting framework validates VaR models using the Kupiec test to ensure statistical accuracy.</p>
     </div>
+
+    <div class="implementation-note" style="margin-top: 20px;">
+        <p><strong>Download:</strong> You can download the Python implementation here: <a href="var_analysis.py" download style="color: #2980b9; font-weight: bold;">var_analysis.py</a></p>
+    </div>
+
+    <h2>Limitations of VaR</h2>
+
+    <p>While VaR is widely used and useful, it's important to understand its limitations. These shortcomings contributed to the 2008 financial crisis when many institutions relied too heavily on VaR models that understated risk.</p>
+
+    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
+        <p><strong>1. VaR doesn't measure worst-case losses.</strong> A 95% VaR of $1,500 only tells you that losses will be less than $1,500 on 95% of days. On the other 5% of days, you could lose $2,000, $5,000, or even more. VaR is silent on how bad the bad days can get.</p>
+    </div>
+
+    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
+        <p><strong>2. It assumes the past predicts the future.</strong> All VaR methods rely on historical data to estimate future risk. During unprecedented events (like COVID-19 or the 2008 crisis), historical patterns may not apply. Markets can behave in ways never seen before.</p>
+    </div>
+
+    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
+        <p><strong>3. Correlations change during crises.</strong> Assets that normally move independently often crash together during market panics. VaR models using normal-period correlations underestimate risk during exactly the times when risk matters most.</p>
+    </div>
+
+    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
+        <p><strong>4. The normal distribution assumption is flawed.</strong> Real market returns have "fat tails" - extreme events occur more frequently than a bell curve predicts. The parametric VaR method can significantly underestimate the probability of large losses.</p>
+    </div>
+
+    <p>For these reasons, sophisticated risk managers use VaR alongside other measures like CVaR (Expected Shortfall), stress testing, and scenario analysis. VaR is one tool in the toolkit, not a complete picture of risk.</p>
 
     <h2>What This All Means</h2>
     
@@ -381,5 +416,8 @@ var_analysis.plot_var_over_time(method='historical')
         <p>© 2025 Alek Swiderski. All Rights Reserved.</p>
         <p><a href="index.html" style="color: white; text-decoration: underline;">Back to Portfolio</a></p>
     </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 </html>

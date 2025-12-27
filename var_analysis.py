@@ -293,19 +293,7 @@ class VaRAnalysis:
         for i in range(window, len(returns_array)):
             # Calculate VaR using rolling window
             window_returns = returns_array[i-window:i]
-
-            if method == 'historical':
-                var_return = np.percentile(window_returns, (1 - confidence_level) * 100)
-            elif method == 'parametric':
-                mean = np.mean(window_returns)
-                std = np.std(window_returns)
-                z = stats.norm.ppf(1 - confidence_level)
-                var_return = mean + z * std
-            else:  # monte_carlo
-                mean = np.mean(window_returns)
-                std = np.std(window_returns)
-                simulated = np.random.normal(mean, std, 1000)
-                var_return = np.percentile(simulated, (1 - confidence_level) * 100)
+            var_return = self._calculate_var_return(window_returns, method, confidence_level)
 
             # Check if actual return breached VaR
             actual_return = returns_array[i]
@@ -341,6 +329,36 @@ class VaRAnalysis:
         print(f"   Kupiec test: {'PASSED' if kupiec_result['passed'] else 'FAILED'}")
 
         return results
+
+    def _calculate_var_return(
+        self,
+        returns: np.ndarray,
+        method: str,
+        confidence_level: float
+    ) -> float:
+        """
+        Calculate VaR return for a given set of returns.
+
+        Args:
+            returns: Array of returns
+            method: 'historical', 'parametric', or 'monte_carlo'
+            confidence_level: Confidence level (e.g., 0.95)
+
+        Returns:
+            VaR as a return (negative number)
+        """
+        if method == 'historical':
+            return np.percentile(returns, (1 - confidence_level) * 100)
+        elif method == 'parametric':
+            mean = np.mean(returns)
+            std = np.std(returns)
+            z = stats.norm.ppf(1 - confidence_level)
+            return mean + z * std
+        else:  # monte_carlo
+            mean = np.mean(returns)
+            std = np.std(returns)
+            simulated = np.random.normal(mean, std, 1000)
+            return np.percentile(simulated, (1 - confidence_level) * 100)
 
     def _kupiec_test(
         self,
@@ -405,6 +423,94 @@ class VaRAnalysis:
             })
 
         return pd.DataFrame(results)
+
+    def calculate_drawdown(self) -> Tuple[pd.Series, Dict]:
+        """
+        Calculate drawdown series and maximum drawdown statistics.
+
+        Returns:
+            Tuple of (drawdown series, stats dict with max_drawdown, max_dd_date, recovery_date)
+        """
+        # Calculate running maximum
+        running_max = self.portfolio_value.cummax()
+
+        # Calculate drawdown as percentage from peak
+        drawdown = (self.portfolio_value - running_max) / running_max
+
+        # Find maximum drawdown
+        max_dd = drawdown.min()
+        max_dd_idx = drawdown.idxmin()
+
+        # Find peak before max drawdown
+        peak_idx = self.portfolio_value[:max_dd_idx].idxmax()
+
+        # Find recovery date (if recovered)
+        peak_value = self.portfolio_value[peak_idx]
+        post_trough = self.portfolio_value[max_dd_idx:]
+        recovered = post_trough[post_trough >= peak_value]
+        recovery_date = recovered.index[0] if len(recovered) > 0 else None
+
+        stats = {
+            'max_drawdown': max_dd,
+            'max_drawdown_pct': abs(max_dd) * 100,
+            'max_drawdown_dollars': abs(max_dd) * self.portfolio_value[peak_idx],
+            'peak_date': peak_idx,
+            'trough_date': max_dd_idx,
+            'recovery_date': recovery_date,
+            'days_to_trough': (max_dd_idx - peak_idx).days if hasattr(max_dd_idx - peak_idx, 'days') else None,
+            'days_to_recovery': (recovery_date - max_dd_idx).days if recovery_date else None
+        }
+
+        return drawdown, stats
+
+    def plot_drawdown(self, save_path: Optional[str] = None) -> None:
+        """Plot drawdown chart showing underwater equity curve."""
+        drawdown, stats = self.calculate_drawdown()
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), height_ratios=[2, 1])
+
+        # Top: Portfolio value with peak markers
+        ax1.plot(self.portfolio_value.index, self.portfolio_value.values,
+                 color='#2c3e50', linewidth=2, label='Portfolio Value')
+        ax1.axhline(y=self.investment, color='#95a5a6', linestyle='--',
+                    alpha=0.7, label='Initial Investment')
+
+        # Mark the peak and trough
+        ax1.scatter([stats['peak_date']], [self.portfolio_value[stats['peak_date']]],
+                    color='#27ae60', s=100, zorder=5, label='Peak')
+        ax1.scatter([stats['trough_date']], [self.portfolio_value[stats['trough_date']]],
+                    color='#e74c3c', s=100, zorder=5, label='Trough')
+
+        ax1.set_title('Portfolio Value with Maximum Drawdown', fontsize=14, fontweight='bold')
+        ax1.set_ylabel('Portfolio Value ($)')
+        ax1.legend(loc='upper left')
+        ax1.grid(True, alpha=0.3)
+        ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.0f}'))
+
+        # Bottom: Drawdown chart
+        ax2.fill_between(drawdown.index, 0, drawdown.values * 100,
+                         color='#e74c3c', alpha=0.5)
+        ax2.plot(drawdown.index, drawdown.values * 100, color='#c0392b', linewidth=1)
+
+        # Mark maximum drawdown
+        ax2.scatter([stats['trough_date']], [stats['max_drawdown'] * 100],
+                    color='#c0392b', s=100, zorder=5)
+        ax2.annotate(f"Max DD: {stats['max_drawdown_pct']:.1f}%",
+                     xy=(stats['trough_date'], stats['max_drawdown'] * 100),
+                     xytext=(10, -20), textcoords='offset points',
+                     fontsize=10, fontweight='bold', color='#c0392b')
+
+        ax2.set_title('Drawdown (%)', fontsize=12, fontweight='bold')
+        ax2.set_xlabel('Date')
+        ax2.set_ylabel('Drawdown (%)')
+        ax2.grid(True, alpha=0.3)
+        ax2.set_ylim(top=5)  # Small buffer above 0
+
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        plt.show()
 
     def plot_portfolio_performance(self, save_path: Optional[str] = None) -> None:
         """Plot portfolio value over time."""
@@ -509,20 +615,7 @@ class VaRAnalysis:
 
         for i in range(window, len(returns_array)):
             window_returns = returns_array[i-window:i]
-
-            if method == 'historical':
-                var_return = np.percentile(window_returns, (1 - confidence_level) * 100)
-            elif method == 'parametric':
-                mean = np.mean(window_returns)
-                std = np.std(window_returns)
-                z = stats.norm.ppf(1 - confidence_level)
-                var_return = mean + z * std
-            else:
-                mean = np.mean(window_returns)
-                std = np.std(window_returns)
-                simulated = np.random.normal(mean, std, 1000)
-                var_return = np.percentile(simulated, (1 - confidence_level) * 100)
-
+            var_return = self._calculate_var_return(window_returns, method, confidence_level)
             var_dollars = abs(var_return * self.investment)
             rolling_var.append(var_dollars)
             dates.append(self.portfolio_returns.index[i])
@@ -577,6 +670,9 @@ class VaRAnalysis:
         annual_vol = self.portfolio_returns.std() * np.sqrt(252) * 100
         sharpe = (annual_return - 2) / annual_vol  # Assuming 2% risk-free rate
 
+        # Drawdown
+        _, dd_stats = self.calculate_drawdown()
+
         results = {
             'Metric': [
                 'Initial Investment',
@@ -585,6 +681,7 @@ class VaRAnalysis:
                 'Annual Return (%)',
                 'Annual Volatility (%)',
                 'Sharpe Ratio',
+                'Maximum Drawdown (%)',
                 'Historical VaR (95%)',
                 'Parametric VaR (95%)',
                 'Monte Carlo VaR (95%)',
@@ -599,6 +696,7 @@ class VaRAnalysis:
                 f'{annual_return:.2f}%',
                 f'{annual_vol:.2f}%',
                 f'{sharpe:.2f}',
+                f'{dd_stats["max_drawdown_pct"]:.2f}%',
                 f'${hist_var:,.0f}',
                 f'${param_var:,.0f}',
                 f'${mc_var:,.0f}',
@@ -641,6 +739,10 @@ class VaRAnalysis:
         print(f"   Annual Volatility:{annual_vol:>12.2f}%")
         print(f"   Sharpe Ratio:     {sharpe:>12.2f}")
 
+        # Drawdown
+        _, dd_stats = self.calculate_drawdown()
+        print(f"   Max Drawdown:     {dd_stats['max_drawdown_pct']:>12.2f}%")
+
         # VaR results
         print("\n3. VALUE AT RISK (95% Confidence)")
         print("-" * 40)
@@ -677,6 +779,7 @@ class VaRAnalysis:
             print("\n6. GENERATING VISUALIZATIONS")
             print("-" * 40)
             self.plot_portfolio_performance()
+            self.plot_drawdown()
             self.plot_var_with_ci(method='historical')
             self.plot_var_over_time(method='historical')
             self.plot_correlation_matrix()
