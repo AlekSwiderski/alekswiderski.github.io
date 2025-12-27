@@ -207,21 +207,156 @@
             min-width: 300px;
         }
         
+        .interactive-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sliders-section, .metrics-section {
+            padding: 1rem;
+        }
+
+        .slider-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .slider-value {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: var(--light-gray);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .allocation-warning {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .allocation-warning.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .reset-btn, .export-btn {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reset-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .export-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .export-btn:hover {
+            background-color: #218838;
+        }
+
+        .metric-card {
+            background-color: var(--background-color);
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
-            
+
             h2 {
                 font-size: 1.5rem;
             }
-            
+
             h3 {
                 font-size: 1.2rem;
             }
-            
+
             .lead {
                 font-size: 1.1rem;
+            }
+
+            .interactive-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -518,13 +653,49 @@ def portfolio_volatility(weights, mean_returns, cov_matrix):
             </pre>
         </div>
         
+        <h2>Interactive Portfolio Builder</h2>
+
+        <p>
+            Try building your own portfolio! Adjust the sliders below to see how different allocations affect your portfolio's expected return, risk, and Sharpe ratio.
+        </p>
+
+        <div class="interactive-container">
+            <div class="sliders-section">
+                <h3>Asset Allocation</h3>
+                <div id="sliders"></div>
+                <div class="allocation-warning" id="allocationWarning">Total allocation: <span id="totalAllocation">100</span>%</div>
+                <button onclick="resetSliders()" class="reset-btn">Reset to Equal Weight</button>
+                <button onclick="exportPortfolio()" class="export-btn">Export Portfolio</button>
+            </div>
+
+            <div class="metrics-section">
+                <h3>Portfolio Metrics</h3>
+                <div class="metric-card">
+                    <div class="metric-label">Expected Annual Return</div>
+                    <div class="metric-value" id="portfolioReturn">0.00%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Annual Volatility (Risk)</div>
+                    <div class="metric-value" id="portfolioRisk">0.00%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Sharpe Ratio</div>
+                    <div class="metric-value" id="sharpeRatio">0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="efficientFrontierChart"></canvas>
+        </div>
+
         <div class="conclusion">
             <h2>Key Takeaways and Investment Implications</h2>
-            
+
             <p>
                 This portfolio optimization analysis offers several important insights for investors:
             </p>
-            
+
             <ol>
                 <li>
                     <strong>Diversification is powerful</strong> - The optimal portfolios consistently included a mix of assets with different risk-return profiles and correlations. This diversification led to better risk-adjusted returns than any single asset could provide.
@@ -542,15 +713,352 @@ def portfolio_volatility(weights, mean_returns, cov_matrix):
                     <strong>US markets outperformed international markets</strong> - During this period, US equities offered superior risk-adjusted returns compared to international and emerging markets.
                 </li>
             </ol>
-            
+
             <p>
                 Modern portfolio theory provides a great framework for creating diversified investment portfolios for different risk levels and preferences. By understanding the risk-return characteristics and correlations of various assets, investors can build portfolios that maximize returns for their chosen level of risk.
             </p>
-            
+
             <p>
                 In future analyses, I hope to extend this work by implementing dynamic rebalancing strategies, incorporating transaction costs, exploring alternative optimization objectives, or adding more asset classes.
             </p>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Asset data
+        const assets = {
+            'SPY': { name: 'SPY - S&P 500', return: 13.50, risk: 19.35 },
+            'QQQ': { name: 'QQQ - Nasdaq-100', return: 18.46, risk: 24.03 },
+            'AGG': { name: 'AGG - US Bonds', return: 1.40, risk: 5.97 },
+            'GLD': { name: 'GLD - Gold', return: 10.95, risk: 14.30 },
+            'VNQ': { name: 'VNQ - Real Estate', return: 5.69, risk: 22.75 },
+            'VEA': { name: 'VEA - Developed Markets', return: 4.78, risk: 18.19 },
+            'VWO': { name: 'VWO - Emerging Markets', return: 2.43, risk: 20.21 }
+        };
+
+        // Correlation matrix (simplified - using estimated values based on typical correlations)
+        const correlationMatrix = {
+            'SPY': { 'SPY': 1.00, 'QQQ': 0.93, 'AGG': 0.14, 'GLD': 0.15, 'VNQ': 0.75, 'VEA': 0.85, 'VWO': 0.75 },
+            'QQQ': { 'SPY': 0.93, 'QQQ': 1.00, 'AGG': 0.10, 'GLD': 0.11, 'VNQ': 0.70, 'VEA': 0.80, 'VWO': 0.70 },
+            'AGG': { 'SPY': 0.14, 'QQQ': 0.10, 'AGG': 1.00, 'GLD': 0.20, 'VNQ': 0.15, 'VEA': 0.12, 'VWO': 0.10 },
+            'GLD': { 'SPY': 0.15, 'QQQ': 0.11, 'AGG': 0.20, 'GLD': 1.00, 'VNQ': 0.22, 'VEA': 0.18, 'VWO': 0.20 },
+            'VNQ': { 'SPY': 0.75, 'QQQ': 0.70, 'AGG': 0.15, 'GLD': 0.22, 'VNQ': 1.00, 'VEA': 0.70, 'VWO': 0.65 },
+            'VEA': { 'SPY': 0.85, 'QQQ': 0.80, 'AGG': 0.12, 'GLD': 0.18, 'VNQ': 0.70, 'VEA': 1.00, 'VWO': 0.82 },
+            'VWO': { 'SPY': 0.75, 'QQQ': 0.70, 'AGG': 0.10, 'GLD': 0.20, 'VNQ': 0.65, 'VEA': 0.82, 'VWO': 1.00 }
+        };
+
+        const riskFreeRate = 2.0;
+        let weights = {};
+        let chart;
+
+        // Initialize sliders
+        function initializeSliders() {
+            const slidersDiv = document.getElementById('sliders');
+            const assetKeys = Object.keys(assets);
+            const equalWeight = (100 / assetKeys.length).toFixed(1);
+
+            assetKeys.forEach(ticker => {
+                weights[ticker] = parseFloat(equalWeight);
+
+                const container = document.createElement('div');
+                container.className = 'slider-container';
+
+                const label = document.createElement('div');
+                label.className = 'slider-label';
+                label.innerHTML = `
+                    <span>${assets[ticker].name}</span>
+                    <span class="slider-value" id="value-${ticker}">${equalWeight}%</span>
+                `;
+
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.min = '0';
+                slider.max = '100';
+                slider.value = equalWeight;
+                slider.step = '0.1';
+                slider.id = `slider-${ticker}`;
+                slider.addEventListener('input', (e) => updateWeight(ticker, e.target.value));
+
+                container.appendChild(label);
+                container.appendChild(slider);
+                slidersDiv.appendChild(container);
+            });
+
+            calculatePortfolio();
+            initializeChart();
+        }
+
+        // Update weight
+        function updateWeight(ticker, value) {
+            weights[ticker] = parseFloat(value);
+            document.getElementById(`value-${ticker}`).textContent = `${value}%`;
+            calculatePortfolio();
+            updateChart();
+        }
+
+        // Calculate portfolio metrics
+        function calculatePortfolio() {
+            const assetKeys = Object.keys(assets);
+
+            // Calculate total allocation
+            const totalAllocation = assetKeys.reduce((sum, ticker) => sum + weights[ticker], 0);
+            document.getElementById('totalAllocation').textContent = totalAllocation.toFixed(1);
+
+            // Update warning style
+            const warningDiv = document.getElementById('allocationWarning');
+            if (Math.abs(totalAllocation - 100) > 0.1) {
+                warningDiv.classList.add('warning');
+            } else {
+                warningDiv.classList.remove('warning');
+            }
+
+            // Normalize weights
+            const normalizedWeights = {};
+            assetKeys.forEach(ticker => {
+                normalizedWeights[ticker] = weights[ticker] / 100;
+            });
+
+            // Calculate expected return
+            const expectedReturn = assetKeys.reduce((sum, ticker) => {
+                return sum + (normalizedWeights[ticker] * assets[ticker].return);
+            }, 0);
+
+            // Calculate portfolio variance using covariance matrix
+            let portfolioVariance = 0;
+            assetKeys.forEach(ticker1 => {
+                assetKeys.forEach(ticker2 => {
+                    const weight1 = normalizedWeights[ticker1];
+                    const weight2 = normalizedWeights[ticker2];
+                    const std1 = assets[ticker1].risk / 100;
+                    const std2 = assets[ticker2].risk / 100;
+                    const correlation = correlationMatrix[ticker1][ticker2];
+                    const covariance = correlation * std1 * std2;
+                    portfolioVariance += weight1 * weight2 * covariance;
+                });
+            });
+
+            const portfolioRisk = Math.sqrt(portfolioVariance) * 100;
+
+            // Calculate Sharpe ratio
+            const sharpeRatio = (expectedReturn - riskFreeRate) / portfolioRisk;
+
+            // Update display
+            document.getElementById('portfolioReturn').textContent = `${expectedReturn.toFixed(2)}%`;
+            document.getElementById('portfolioRisk').textContent = `${portfolioRisk.toFixed(2)}%`;
+            document.getElementById('sharpeRatio').textContent = sharpeRatio.toFixed(2);
+
+            return { return: expectedReturn, risk: portfolioRisk, sharpe: sharpeRatio };
+        }
+
+        // Reset sliders to equal weight
+        function resetSliders() {
+            const assetKeys = Object.keys(assets);
+            const equalWeight = (100 / assetKeys.length).toFixed(1);
+
+            assetKeys.forEach(ticker => {
+                weights[ticker] = parseFloat(equalWeight);
+                document.getElementById(`slider-${ticker}`).value = equalWeight;
+                document.getElementById(`value-${ticker}`).textContent = `${equalWeight}%`;
+            });
+
+            calculatePortfolio();
+            updateChart();
+        }
+
+        // Export portfolio
+        function exportPortfolio() {
+            const assetKeys = Object.keys(assets);
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Asset,Ticker,Allocation (%),Expected Return (%),Risk (%)\n";
+
+            assetKeys.forEach(ticker => {
+                const allocation = weights[ticker].toFixed(2);
+                const ret = assets[ticker].return.toFixed(2);
+                const risk = assets[ticker].risk.toFixed(2);
+                csvContent += `${assets[ticker].name},${ticker},${allocation},${ret},${risk}\n`;
+            });
+
+            const metrics = calculatePortfolio();
+            csvContent += `\nPortfolio Metrics\n`;
+            csvContent += `Expected Return,${metrics.return.toFixed(2)}%\n`;
+            csvContent += `Risk (Volatility),${metrics.risk.toFixed(2)}%\n`;
+            csvContent += `Sharpe Ratio,${metrics.sharpe.toFixed(2)}\n`;
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "portfolio_allocation.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize Chart.js
+        function initializeChart() {
+            const ctx = document.getElementById('efficientFrontierChart').getContext('2d');
+
+            // Generate efficient frontier points
+            const frontierPoints = generateEfficientFrontier();
+
+            // Individual asset points
+            const assetPoints = Object.keys(assets).map(ticker => ({
+                x: assets[ticker].risk,
+                y: assets[ticker].return,
+                label: ticker
+            }));
+
+            // Current portfolio point
+            const currentPortfolio = calculatePortfolio();
+
+            chart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Efficient Frontier',
+                            data: frontierPoints,
+                            borderColor: 'rgba(42, 82, 152, 1)',
+                            backgroundColor: 'rgba(42, 82, 152, 0.1)',
+                            showLine: true,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Individual Assets',
+                            data: assetPoints,
+                            backgroundColor: 'rgba(77, 124, 199, 0.8)',
+                            pointRadius: 8,
+                            pointHoverRadius: 10
+                        },
+                        {
+                            label: 'Your Portfolio',
+                            data: [{ x: currentPortfolio.risk, y: currentPortfolio.return }],
+                            backgroundColor: 'rgba(40, 167, 69, 1)',
+                            pointRadius: 12,
+                            pointHoverRadius: 14,
+                            pointStyle: 'star'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Efficient Frontier - Risk vs. Return',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const point = context.raw;
+                                    if (context.datasetIndex === 1) {
+                                        return `${assetPoints[context.dataIndex].label}: Return ${point.y.toFixed(2)}%, Risk ${point.x.toFixed(2)}%`;
+                                    }
+                                    return `${label}: Return ${point.y.toFixed(2)}%, Risk ${point.x.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Risk (Volatility %)',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            min: 0,
+                            max: 30
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Expected Return (%)',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            min: 0,
+                            max: 20
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart with new portfolio position
+        function updateChart() {
+            const currentPortfolio = calculatePortfolio();
+            chart.data.datasets[2].data = [{ x: currentPortfolio.risk, y: currentPortfolio.return }];
+            chart.update();
+        }
+
+        // Generate efficient frontier points (simplified - using random portfolios)
+        function generateEfficientFrontier() {
+            const points = [];
+            const numPortfolios = 1000;
+            const assetKeys = Object.keys(assets);
+
+            for (let i = 0; i < numPortfolios; i++) {
+                // Generate random weights
+                const randomWeights = {};
+                let sum = 0;
+                assetKeys.forEach(ticker => {
+                    randomWeights[ticker] = Math.random();
+                    sum += randomWeights[ticker];
+                });
+
+                // Normalize weights
+                assetKeys.forEach(ticker => {
+                    randomWeights[ticker] /= sum;
+                });
+
+                // Calculate return
+                const expectedReturn = assetKeys.reduce((acc, ticker) => {
+                    return acc + (randomWeights[ticker] * assets[ticker].return);
+                }, 0);
+
+                // Calculate risk
+                let portfolioVariance = 0;
+                assetKeys.forEach(ticker1 => {
+                    assetKeys.forEach(ticker2 => {
+                        const weight1 = randomWeights[ticker1];
+                        const weight2 = randomWeights[ticker2];
+                        const std1 = assets[ticker1].risk / 100;
+                        const std2 = assets[ticker2].risk / 100;
+                        const correlation = correlationMatrix[ticker1][ticker2];
+                        const covariance = correlation * std1 * std2;
+                        portfolioVariance += weight1 * weight2 * covariance;
+                    });
+                });
+
+                const portfolioRisk = Math.sqrt(portfolioVariance) * 100;
+
+                points.push({ x: portfolioRisk, y: expectedReturn });
+            }
+
+            // Filter to keep only efficient portfolios (highest return for each risk level)
+            points.sort((a, b) => a.x - b.x);
+            const efficientPoints = [];
+            let maxReturn = -Infinity;
+
+            points.forEach(point => {
+                if (point.y > maxReturn) {
+                    efficientPoints.push(point);
+                    maxReturn = point.y;
+                }
+            });
+
+            return efficientPoints;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', initializeSliders);
+    </script>
 </body>
 </html>
