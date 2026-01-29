@@ -16,46 +16,381 @@ from policy_events import POLICY_EVENTS, POLICY_COLORS, get_policy_events_df
 
 # Page config
 st.set_page_config(
-    page_title="HK Property Market Dashboard",
-    page_icon="🏠",
+    page_title="HK Property Market",
+    page_icon="\u25C8",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS
+# Custom CSS — Dark finance editorial theme
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    /* ===== GLOBAL ===== */
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+        color: #E6EDF3;
+    }
+
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
+    }
+
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header[data-testid="stHeader"] {
+        background-color: #0E1117;
+        border-bottom: 1px solid #2A2F3A;
+    }
+
+    /* ===== SIDEBAR ===== */
+    [data-testid="stSidebar"] {
+        background-color: #161B22;
+        border-right: 1px solid #2A2F3A;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+        color: #8B949E;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+    }
+
+    [data-testid="stSidebar"] .stRadio > label {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #8B949E;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    [data-testid="stSidebar"] .stRadio [role="radiogroup"] label[data-checked="true"],
+    [data-testid="stSidebar"] .stRadio [role="radiogroup"] label:has(input:checked) {
+        color: #C9A84C !important;
+        font-weight: 700;
+    }
+
+    [data-testid="stSidebar"] .stRadio [role="radiogroup"] label:hover {
+        color: #E6EDF3;
+        background-color: #1C2333;
+    }
+
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        font-family: 'DM Serif Display', serif;
+        color: #C9A84C;
+        letter-spacing: 0.02em;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stAlert"] {
+        background-color: #1C2333;
+        border: 1px solid #2A2F3A;
+        border-left: 3px solid #C9A84C;
+        color: #8B949E;
+        border-radius: 2px;
+    }
+
+    [data-testid="stSidebar"] hr {
+        border-color: #2A2F3A;
+    }
+
+    /* ===== MAIN HEADER ===== */
     .main-header {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
+        font-family: 'DM Serif Display', serif !important;
+        font-size: 2.8rem !important;
+        font-weight: 400 !important;
+        color: #E6EDF3 !important;
+        margin-bottom: 0.25rem !important;
+        letter-spacing: -0.01em;
+        line-height: 1.1;
     }
+
+    .main-header::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 3px;
+        background-color: #C9A84C;
+        margin-top: 0.75rem;
+    }
+
     .sub-header {
-        font-size: 1.1rem;
-        color: #7f8c8d;
-        margin-bottom: 2rem;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 1rem !important;
+        color: #6B7280 !important;
+        margin-bottom: 2.5rem !important;
+        font-weight: 400;
+        letter-spacing: 0.04em;
     }
-    .metric-card {
-        background-color: #f8f9fa;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #3498db;
+
+    /* ===== ALL HEADERS ===== */
+    h1, h2, h3 {
+        font-family: 'DM Serif Display', serif !important;
+        color: #E6EDF3 !important;
     }
-    .policy-cooling {
-        color: #e74c3c;
-        font-weight: bold;
+
+    h1 {
+        font-size: 2rem !important;
+        border-bottom: 1px solid #2A2F3A;
+        padding-bottom: 0.5rem;
     }
-    .policy-easing {
-        color: #27ae60;
-        font-weight: bold;
+
+    h2 {
+        font-size: 1.5rem !important;
+        color: #C9A84C !important;
+    }
+
+    h3 {
+        font-size: 1.2rem !important;
+    }
+
+    /* ===== METRIC CARDS ===== */
+    [data-testid="metric-container"] {
+        background-color: #161B22;
+        border: 1px solid #2A2F3A;
+        border-top: 3px solid #C9A84C;
+        padding: 1.25rem 1rem;
+        border-radius: 0px;
+        transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    [data-testid="metric-container"]:hover {
+        border-top-color: #E8C547;
+        background-color: #1C2333;
+        transform: translateY(-2px);
+    }
+
+    [data-testid="stMetricLabel"] {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #8B949E !important;
+    }
+
+    [data-testid="stMetricLabel"] p {
+        font-size: 0.75rem !important;
+        color: #8B949E !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 1.8rem !important;
+        font-weight: 500;
+        color: #E6EDF3 !important;
+    }
+
+    [data-testid="stMetricValue"] div {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 1.8rem !important;
+    }
+
+    [data-testid="stMetricDelta"] {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem !important;
+    }
+
+    /* ===== HORIZONTAL RULES ===== */
+    hr {
+        border: none;
+        border-top: 1px solid #2A2F3A;
+        margin: 2rem 0;
+    }
+
+    /* ===== MARKDOWN / BODY TEXT ===== */
+    [data-testid="stMarkdownContainer"] {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.65;
+    }
+
+    [data-testid="stMarkdownContainer"] p {
+        color: #E6EDF3;
+    }
+
+    [data-testid="stMarkdownContainer"] strong {
+        color: #C9A84C;
+        font-weight: 600;
+    }
+
+    [data-testid="stMarkdownContainer"] li {
+        color: #8B949E;
+        margin-bottom: 0.25rem;
+    }
+
+    /* ===== TABLES ===== */
+    [data-testid="stMarkdownContainer"] table {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+    }
+
+    [data-testid="stMarkdownContainer"] table th {
+        background-color: #161B22;
+        color: #C9A84C;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid #C9A84C;
+        text-align: left;
+    }
+
+    [data-testid="stMarkdownContainer"] table td {
+        padding: 0.6rem 1rem;
+        border-bottom: 1px solid #2A2F3A;
+        color: #E6EDF3;
+    }
+
+    [data-testid="stMarkdownContainer"] table tr:hover td {
+        background-color: #1C2333;
+    }
+
+    /* ===== DATAFRAMES ===== */
+    [data-testid="stDataFrame"] {
+        border: 1px solid #2A2F3A;
+        border-radius: 0px;
+    }
+
+    /* ===== LINKS ===== */
+    a {
+        color: #C9A84C !important;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s ease;
+    }
+
+    a:hover {
+        color: #E8C547 !important;
+        border-bottom-color: #E8C547;
+    }
+
+    /* ===== ALERT BOXES ===== */
+    [data-testid="stAlert"] {
+        background-color: #161B22;
+        border: 1px solid #2A2F3A;
+        border-radius: 0px;
+        color: #8B949E;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes goldPulse {
+        0%, 100% { border-top-color: #C9A84C; }
+        50% { border-top-color: #E8C547; }
+    }
+
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"] {
+        animation: fadeInUp 0.4s ease-out both;
+    }
+
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(1) { animation-delay: 0.05s; }
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(2) { animation-delay: 0.10s; }
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(3) { animation-delay: 0.15s; }
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(4) { animation-delay: 0.20s; }
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(5) { animation-delay: 0.25s; }
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:nth-child(6) { animation-delay: 0.30s; }
+
+    [data-testid="column"]:first-child [data-testid="metric-container"] {
+        animation: goldPulse 2s ease-in-out 0.5s 1;
+    }
+
+    .main .block-container {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0E1117;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #2A2F3A;
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #484F58;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
+
+# =============================================================================
+# PLOTLY DARK THEME
+# =============================================================================
+
+def get_plotly_layout_defaults():
+    """Return dark finance theme layout kwargs for all Plotly charts."""
+    return dict(
+        template="plotly_dark",
+        paper_bgcolor="#0E1117",
+        plot_bgcolor="#0E1117",
+        font=dict(
+            family="Inter, sans-serif",
+            color="#8B949E",
+            size=12,
+        ),
+        title_font=dict(
+            family="DM Serif Display, serif",
+            color="#E6EDF3",
+            size=18,
+        ),
+        xaxis=dict(
+            gridcolor="#2A2F3A",
+            gridwidth=1,
+            zerolinecolor="#2A2F3A",
+            linecolor="#2A2F3A",
+            tickfont=dict(family="JetBrains Mono, monospace", size=11, color="#6B7280"),
+            title_font=dict(family="Inter, sans-serif", color="#8B949E", size=12),
+        ),
+        yaxis=dict(
+            gridcolor="#2A2F3A",
+            gridwidth=1,
+            zerolinecolor="#2A2F3A",
+            linecolor="#2A2F3A",
+            tickfont=dict(family="JetBrains Mono, monospace", size=11, color="#6B7280"),
+            title_font=dict(family="Inter, sans-serif", color="#8B949E", size=12),
+        ),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#8B949E", size=11),
+            bordercolor="#2A2F3A",
+            borderwidth=1,
+        ),
+        hoverlabel=dict(
+            bgcolor="#1C2333",
+            bordercolor="#C9A84C",
+            font=dict(family="JetBrains Mono, monospace", color="#E6EDF3", size=12),
+        ),
+        margin=dict(l=60, r=30, t=60, b=50),
+    )
+
+
+# =============================================================================
+# DATA LOADING
+# =============================================================================
 
 @st.cache_data(ttl=3600)
 def load_rvd_price_indices():
@@ -88,7 +423,6 @@ def load_rvd_rental_indices():
 @st.cache_data(ttl=3600)
 def load_rvd_transactions():
     """Load RVD transaction data."""
-    # Try multiple possible URLs for transaction data
     urls = [
         "https://www.rvd.gov.hk/doc/en/statistics/his_data_8.xls",
         "https://www.rvd.gov.hk/doc/en/statistics/hs_data_8.xls",
@@ -105,16 +439,12 @@ def load_rvd_transactions():
 
 
 def parse_rvd_price_data(raw_df):
-    """
-    Parse RVD price indices Excel into clean DataFrame.
-    RVD files have specific structure with metadata rows.
-    """
+    """Parse RVD price indices Excel into clean DataFrame."""
     if raw_df is None:
         return None
 
     df = raw_df.copy()
 
-    # Find the header row (usually contains 'Year' or similar)
     header_row = None
     for i, row in df.iterrows():
         row_str = " ".join([str(x).lower() for x in row.values if pd.notna(x)])
@@ -123,28 +453,24 @@ def parse_rvd_price_data(raw_df):
             break
 
     if header_row is None:
-        # Try to use row 3 as header (common in RVD files)
         header_row = 3
 
-    # Set header and clean
     df.columns = df.iloc[header_row]
     df = df.iloc[header_row + 1 :].reset_index(drop=True)
-
-    # Drop empty columns
     df = df.dropna(axis=1, how="all")
-
-    # Clean column names
     df.columns = [str(c).strip() if pd.notna(c) else f"col_{i}" for i, c in enumerate(df.columns)]
 
     return df
 
 
+# =============================================================================
+# CHART FUNCTIONS
+# =============================================================================
+
 def create_price_trend_chart(df, policy_df):
     """Create price trend chart with policy overlays."""
     fig = go.Figure()
 
-    # Add price trend line (assuming 'All Classes' column exists)
-    # We'll need to adapt this based on actual column names
     price_col = None
     for col in df.columns:
         if "all" in str(col).lower() or "overall" in str(col).lower():
@@ -152,25 +478,22 @@ def create_price_trend_chart(df, policy_df):
             break
 
     if price_col is None and len(df.columns) > 1:
-        price_col = df.columns[1]  # Use first data column
+        price_col = df.columns[1]
 
     if price_col:
-        # Try to create a date/year column
         year_col = df.columns[0]
-
         fig.add_trace(
             go.Scatter(
                 x=df[year_col],
                 y=pd.to_numeric(df[price_col], errors="coerce"),
                 mode="lines",
                 name="Price Index",
-                line=dict(color="#3498db", width=2),
+                line=dict(color="#C9A84C", width=2.5),
             )
         )
 
-    # Add policy event markers
     for event in POLICY_EVENTS:
-        color = POLICY_COLORS.get(event["type"], "#95a5a6")
+        color = POLICY_COLORS.get(event["type"], "#6B7280")
         fig.add_vline(
             x=event["date"],
             line_dash="dash",
@@ -179,14 +502,15 @@ def create_price_trend_chart(df, policy_df):
             annotation_text=event["name"],
             annotation_position="top",
             annotation_font_size=10,
+            annotation_font_color="#8B949E",
         )
 
     fig.update_layout(
-        title="Private Domestic Property Price Index with Policy Events",
+        **get_plotly_layout_defaults(),
+        title="Private Domestic Property Price Index",
         xaxis_title="Year",
         yaxis_title="Price Index (1999 = 100)",
         hovermode="x unified",
-        template="plotly_white",
         height=500,
     )
 
@@ -194,12 +518,7 @@ def create_price_trend_chart(df, policy_df):
 
 
 def create_affordability_chart():
-    """
-    Create affordability ratio visualization.
-    Uses historical median price to income ratios.
-    """
-    # Historical affordability data (price-to-income ratio)
-    # Source: Demographia, various years
+    """Create affordability ratio visualization."""
     affordability_data = {
         "Year": [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
         "Ratio": [11.4, 12.6, 13.5, 14.9, 17.0, 19.0, 18.1, 19.4, 20.9, 20.8, 20.7, 23.2, 18.8, 18.8, 16.7],
@@ -208,28 +527,42 @@ def create_affordability_chart():
 
     fig = go.Figure()
 
-    # Color bars based on affordability threshold
-    colors = ["#e74c3c" if r > 15 else "#f39c12" if r > 10 else "#27ae60" for r in df["Ratio"]]
+    colors = [
+        "#E05252" if r > 15
+        else "#F59E0B" if r > 10
+        else "#3FB68B"
+        for r in df["Ratio"]
+    ]
 
     fig.add_trace(
         go.Bar(
             x=df["Year"],
             y=df["Ratio"],
             marker_color=colors,
+            marker_line_color="#0E1117",
+            marker_line_width=1,
             text=df["Ratio"],
             textposition="outside",
+            textfont=dict(family="JetBrains Mono, monospace", size=11, color="#E6EDF3"),
         )
     )
 
-    # Add threshold lines
-    fig.add_hline(y=5, line_dash="dash", line_color="green", annotation_text="Affordable (<5)")
-    fig.add_hline(y=10, line_dash="dash", line_color="orange", annotation_text="Severely Unaffordable (>10)")
+    fig.add_hline(
+        y=5, line_dash="dash", line_color="#3FB68B", line_width=1,
+        annotation_text="Affordable (<5)",
+        annotation_font=dict(color="#3FB68B", size=10),
+    )
+    fig.add_hline(
+        y=10, line_dash="dash", line_color="#F59E0B", line_width=1,
+        annotation_text="Severely Unaffordable (>10)",
+        annotation_font=dict(color="#F59E0B", size=10),
+    )
 
     fig.update_layout(
-        title="Hong Kong Housing Affordability (Median Price-to-Income Ratio)",
+        **get_plotly_layout_defaults(),
+        title="Housing Affordability Ratio",
         xaxis_title="Year",
         yaxis_title="Price-to-Income Ratio",
-        template="plotly_white",
         height=400,
         showlegend=False,
     )
@@ -249,19 +582,33 @@ def create_policy_timeline():
                 x=[row["date"]],
                 y=[row["type"]],
                 mode="markers+text",
-                marker=dict(size=20, color=row["color"], symbol="diamond"),
+                marker=dict(
+                    size=16,
+                    color=row["color"],
+                    symbol="diamond",
+                    line=dict(color="#0E1117", width=2),
+                ),
                 text=row["name"],
                 textposition="top center",
+                textfont=dict(
+                    family="Inter, sans-serif",
+                    size=10,
+                    color="#E6EDF3",
+                ),
                 name=row["name"],
-                hovertemplate=f"<b>{row['name']}</b><br>{row['date'].strftime('%Y-%m-%d')}<br>{row['description']}<extra></extra>",
+                hovertemplate=(
+                    f"<b>{row['name']}</b><br>"
+                    f"{row['date'].strftime('%Y-%m-%d')}<br>"
+                    f"{row['description']}<extra></extra>"
+                ),
             )
         )
 
     fig.update_layout(
-        title="Property Policy Timeline",
+        **get_plotly_layout_defaults(),
+        title="Policy Timeline",
         xaxis_title="Date",
         yaxis_title="Policy Type",
-        template="plotly_white",
         height=300,
         showlegend=False,
     )
@@ -275,27 +622,49 @@ def create_policy_timeline():
 
 def main():
     # Header
-    st.markdown('<p class="main-header">🏠 Hong Kong Property Market Dashboard</p>', unsafe_allow_html=True)
     st.markdown(
-        '<p class="sub-header">Analyzing price trends, affordability, and policy impact (1979-Present)</p>',
+        '<p class="main-header">Hong Kong Property Market</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<p class="sub-header">Price Trends / Affordability / Policy Impact / 1979 \u2014 Present</p>',
         unsafe_allow_html=True,
     )
 
     # Sidebar
-    st.sidebar.title("Navigation")
+    st.sidebar.markdown(
+        '<p style="font-family: DM Serif Display, serif; font-size: 1.3rem; '
+        'color: #C9A84C; margin-bottom: 0.25rem; letter-spacing: 0.02em;">HK Property</p>',
+        unsafe_allow_html=True,
+    )
+    st.sidebar.markdown(
+        '<p style="font-family: JetBrains Mono, monospace; font-size: 0.7rem; '
+        'color: #6B7280; letter-spacing: 0.15em; text-transform: uppercase; '
+        'margin-bottom: 1.5rem;">Market Intelligence</p>',
+        unsafe_allow_html=True,
+    )
+
     page = st.sidebar.radio(
-        "Select View",
+        "Navigation",
         ["Overview", "Price Trends", "Affordability", "Policy Impact", "Data Sources"],
+        label_visibility="collapsed",
     )
 
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### About")
-    st.sidebar.info(
-        "This dashboard analyzes Hong Kong's property market using official data "
-        "from the Rating and Valuation Department (RVD) and Hong Kong Monetary Authority (HKMA)."
+    st.sidebar.markdown(
+        '<p style="font-family: Inter, sans-serif; font-size: 0.7rem; '
+        'color: #6B7280; text-transform: uppercase; letter-spacing: 0.1em; '
+        'margin-bottom: 0.5rem;">Data Sources</p>',
+        unsafe_allow_html=True,
+    )
+    st.sidebar.markdown(
+        "Rating & Valuation Dept.  \n"
+        "HK Monetary Authority  \n"
+        "Census & Statistics Dept.  \n"
+        "Demographia International"
     )
 
-    # Load data (silently handle errors)
+    # Load data
     raw_price_df = load_rvd_price_indices()
     raw_rental_df = load_rvd_rental_indices()
     raw_transactions_df = load_rvd_transactions()
@@ -319,7 +688,6 @@ def show_overview(raw_price_df, policy_df):
     """Overview page with key metrics and summary chart."""
     st.header("Market Overview")
 
-    # Key metrics row
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -354,7 +722,6 @@ def show_overview(raw_price_df, policy_df):
 
     st.markdown("---")
 
-    # Summary charts
     col1, col2 = st.columns(2)
 
     with col1:
@@ -367,7 +734,6 @@ def show_overview(raw_price_df, policy_df):
         fig = create_policy_timeline()
         st.plotly_chart(fig, use_container_width=True)
 
-    # Key insights
     st.markdown("---")
     st.subheader("Key Insights")
 
@@ -398,17 +764,15 @@ def show_price_trends(raw_price_df, raw_rental_df, policy_df):
     """Price trends analysis page."""
     st.header("Price & Rental Trends")
 
-    # Parse data
     if raw_price_df is not None:
         st.subheader("Raw Price Index Data Preview")
         st.dataframe(raw_price_df.head(20), use_container_width=True)
 
         st.info(
-            "💡 The RVD data requires parsing. The table above shows the raw format. "
+            "The RVD data requires parsing. The table above shows the raw format. "
             "Price indices are typically in columns by property class (A-E) with years in rows."
         )
 
-        # Try to create chart
         price_df = parse_rvd_price_data(raw_price_df)
         if price_df is not None and len(price_df) > 0:
             st.subheader("Parsed Data")
@@ -432,7 +796,7 @@ def show_affordability():
 
         | Rating | Multiple |
         |--------|----------|
-        | Affordable | ≤ 3.0 |
+        | Affordable | \u2264 3.0 |
         | Moderately Unaffordable | 3.1 - 4.0 |
         | Seriously Unaffordable | 4.1 - 5.0 |
         | Severely Unaffordable | > 5.0 |
@@ -483,25 +847,31 @@ def show_policy_impact(policy_df):
         """
     )
 
-    # Policy timeline
     fig = create_policy_timeline()
     st.plotly_chart(fig, use_container_width=True)
 
-    # Policy details table
     st.subheader("Policy Details")
 
     for event in POLICY_EVENTS:
-        type_class = "policy-cooling" if event["type"] == "cooling" else "policy-easing"
-        type_label = "🔴 Cooling" if event["type"] == "cooling" else "🟢 Easing" if event["type"] == "easing" else "🟣 External"
+        if event["type"] == "cooling":
+            badge = '<span style="display:inline-block; padding:2px 8px; background:#E05252; color:#0E1117; font-family:JetBrains Mono,monospace; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;">COOLING</span>'
+        elif event["type"] == "easing":
+            badge = '<span style="display:inline-block; padding:2px 8px; background:#3FB68B; color:#0E1117; font-family:JetBrains Mono,monospace; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;">EASING</span>'
+        else:
+            badge = '<span style="display:inline-block; padding:2px 8px; background:#A78BFA; color:#0E1117; font-family:JetBrains Mono,monospace; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;">EXTERNAL</span>'
 
         st.markdown(
             f"""
-            **{event['date']} - {event['name']}** {type_label}
-
-            {event['description']}
-
-            ---
-            """
+            <div style="padding:1rem 0; border-bottom:1px solid #2A2F3A;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:0.5rem;">
+                    <span style="font-family:JetBrains Mono,monospace; color:#6B7280; font-size:0.8rem;">{event['date']}</span>
+                    {badge}
+                </div>
+                <div style="font-family:DM Serif Display,serif; font-size:1.1rem; color:#E6EDF3; margin-bottom:0.25rem;">{event['name']}</div>
+                <div style="font-family:Inter,sans-serif; font-size:0.85rem; color:#8B949E;">{event['description']}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
 
@@ -526,11 +896,11 @@ def show_data_sources():
         - RVD indices use 1999 as base year (1999 = 100)
         - Indices are transaction-based, reflecting actual sales
         - Broken down by property class (size):
-          - Class A: < 40 m²
-          - Class B: 40-69.9 m²
-          - Class C: 70-99.9 m²
-          - Class D: 100-159.9 m²
-          - Class E: ≥ 160 m²
+          - Class A: < 40 m\u00b2
+          - Class B: 40-69.9 m\u00b2
+          - Class C: 70-99.9 m\u00b2
+          - Class D: 100-159.9 m\u00b2
+          - Class E: \u2265 160 m\u00b2
 
         **Affordability Ratio:**
         - Median dwelling price / Median annual household income
@@ -539,7 +909,6 @@ def show_data_sources():
         ### Data Refresh
 
         Data is cached for 1 hour to reduce load on government servers.
-        Last refresh: {current time}
         """
     )
 
@@ -549,13 +918,34 @@ def show_data_sources():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("[📥 Price Indices (XLS)](https://www.rvd.gov.hk/doc/en/statistics/his_data_2.xls)")
+        st.markdown(
+            '<a href="https://www.rvd.gov.hk/doc/en/statistics/his_data_2.xls" '
+            'style="display:inline-block; padding:8px 16px; border:1px solid #C9A84C; '
+            'color:#C9A84C !important; font-family:JetBrains Mono,monospace; font-size:0.75rem; '
+            'font-weight:600; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase;"'
+            '>Price Indices XLS</a>',
+            unsafe_allow_html=True,
+        )
 
     with col2:
-        st.markdown("[📥 Rental Indices (XLS)](https://www.rvd.gov.hk/doc/en/statistics/his_data_4.xls)")
+        st.markdown(
+            '<a href="https://www.rvd.gov.hk/doc/en/statistics/his_data_4.xls" '
+            'style="display:inline-block; padding:8px 16px; border:1px solid #C9A84C; '
+            'color:#C9A84C !important; font-family:JetBrains Mono,monospace; font-size:0.75rem; '
+            'font-weight:600; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase;"'
+            '>Rental Indices XLS</a>',
+            unsafe_allow_html=True,
+        )
 
     with col3:
-        st.markdown("[📥 Transactions (XLS)](https://www.rvd.gov.hk/doc/en/statistics/hs_data_8.xls)")
+        st.markdown(
+            '<a href="https://www.rvd.gov.hk/doc/en/statistics/hs_data_8.xls" '
+            'style="display:inline-block; padding:8px 16px; border:1px solid #C9A84C; '
+            'color:#C9A84C !important; font-family:JetBrains Mono,monospace; font-size:0.75rem; '
+            'font-weight:600; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase;"'
+            '>Transactions XLS</a>',
+            unsafe_allow_html=True,
+        )
 
 
 if __name__ == "__main__":

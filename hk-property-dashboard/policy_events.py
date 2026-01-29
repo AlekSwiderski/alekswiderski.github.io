@@ -62,9 +62,9 @@ POLICY_EVENTS = [
 
 # Color coding for policy types
 POLICY_COLORS = {
-    "cooling": "#e74c3c",  # Red - restrictive measures
-    "easing": "#27ae60",   # Green - relaxation measures
-    "external": "#9b59b6", # Purple - external events
+    "cooling": "#E05252",  # Red - restrictive measures
+    "easing": "#3FB68B",   # Green - relaxation measures
+    "external": "#A78BFA", # Purple-violet - external events
 }
 
 
