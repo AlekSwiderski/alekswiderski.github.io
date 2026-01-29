@@ -608,6 +608,7 @@ def create_policy_timeline():
 
     layout_defaults = get_plotly_layout_defaults()
     layout_defaults.pop("yaxis", None)
+    layout_defaults.pop("legend", None)
 
     fig.update_layout(
         **layout_defaults,
