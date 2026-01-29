@@ -606,8 +606,11 @@ def create_policy_timeline():
             )
         )
 
+    layout_defaults = get_plotly_layout_defaults()
+    layout_defaults.pop("yaxis", None)
+
     fig.update_layout(
-        **get_plotly_layout_defaults(),
+        **layout_defaults,
         title="Policy Timeline",
         xaxis_title="",
         yaxis_title="",
