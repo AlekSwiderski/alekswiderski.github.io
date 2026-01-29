@@ -576,29 +576,31 @@ def create_policy_timeline():
 
     fig = go.Figure()
 
+    # Group by type for cleaner legend
+    type_labels = {"cooling": "Cooling Measure", "easing": "Easing Measure", "external": "External Event"}
+    types_seen = set()
+
     for i, row in policy_df.iterrows():
+        show_legend = row["type"] not in types_seen
+        types_seen.add(row["type"])
+
         fig.add_trace(
             go.Scatter(
                 x=[row["date"]],
                 y=[row["type"]],
-                mode="markers+text",
+                mode="markers",
                 marker=dict(
-                    size=16,
+                    size=14,
                     color=row["color"],
                     symbol="diamond",
                     line=dict(color="#0E1117", width=2),
                 ),
-                text=row["name"],
-                textposition="top center",
-                textfont=dict(
-                    family="Inter, sans-serif",
-                    size=10,
-                    color="#E6EDF3",
-                ),
-                name=row["name"],
+                name=type_labels.get(row["type"], row["type"]),
+                legendgroup=row["type"],
+                showlegend=show_legend,
                 hovertemplate=(
                     f"<b>{row['name']}</b><br>"
-                    f"{row['date'].strftime('%Y-%m-%d')}<br>"
+                    f"{row['date'].strftime('%b %Y')}<br>"
                     f"{row['description']}<extra></extra>"
                 ),
             )
@@ -607,10 +609,29 @@ def create_policy_timeline():
     fig.update_layout(
         **get_plotly_layout_defaults(),
         title="Policy Timeline",
-        xaxis_title="Date",
-        yaxis_title="Policy Type",
+        xaxis_title="",
+        yaxis_title="",
         height=300,
-        showlegend=False,
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=0,
+            font=dict(size=10, color="#8B949E"),
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=0,
+        ),
+        yaxis=dict(
+            gridcolor="#2A2F3A",
+            gridwidth=1,
+            zerolinecolor="#2A2F3A",
+            linecolor="#2A2F3A",
+            tickfont=dict(family="Inter, sans-serif", size=11, color="#8B949E"),
+            categoryorder="array",
+            categoryarray=["cooling", "easing", "external"],
+        ),
     )
 
     return fig
