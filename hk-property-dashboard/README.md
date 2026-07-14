@@ -1,63 +1,37 @@
-# Hong Kong Property Market Dashboard
+# Hong Kong private housing
 
-Interactive dashboard analyzing Hong Kong's property market through price trends, affordability metrics, and government policy impact.
+A Streamlit dashboard for the official monthly sale price and rental indices published by Hong Kong's Rating and Valuation Department.
 
-**[Live Demo](https://hk-property-dashboard.streamlit.app)** *(link active after deployment)*
+[Open the live dashboard](https://alekswiderskiappio-6gsea6xfxap4xwqfjxy46p.streamlit.app/)
 
-![Dashboard Preview](preview.png)
+## What it covers
 
-## Features
+- Monthly private domestic sale price and rental indices from January 1993
+- Latest monthly and 12-month changes
+- Distance from each series peak
+- Comparisons across RVD flat size classes A to E
+- Selected residential property tax and mortgage policy dates
 
-- **Price Trends**: Historical price and rental indices from 1979-present
-- **Affordability Analysis**: Price-to-income ratios showing HK as world's least affordable market
-- **Policy Impact**: Timeline of government cooling measures and their effects
-- **Data Transparency**: Direct links to official government data sources
+Both index series use 1999 = 100. They can be compared as indices, but they do not represent cash prices, rents or rental yields.
 
-## Data Sources
+## Official sources
 
-| Source | Data | Update |
-|--------|------|--------|
-| [Rating & Valuation Dept](https://www.rvd.gov.hk/) | Price/rental indices, transactions | Monthly |
-| [HKMA](https://www.hkma.gov.hk/) | Mortgage data, negative equity | Monthly |
-| [Census & Statistics](https://www.censtatd.gov.hk/) | Income data | Annual |
+- [Private domestic price indices by class](https://www.rvd.gov.hk/doc/en/statistics/his_data_4.xls)
+- [Private domestic rental indices by class](https://www.rvd.gov.hk/doc/en/statistics/his_data_3.xls)
 
-## Quick Start
+The latest RVD observations are provisional. The app requests the workbooks when it starts and caches the cleaned data for one hour.
+
+## Run locally
 
 ```bash
-# Install dependencies
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-
-# Run locally
 streamlit run app.py
 ```
 
-## Deployment
+Run the parser and metric tests with:
 
-This app is configured for [Streamlit Community Cloud](https://streamlit.io/cloud):
-
-1. Push to GitHub
-2. Connect repo to Streamlit Cloud
-3. Deploy from `hk-property-dashboard/app.py`
-
-## Project Structure
-
+```bash
+pytest -q
 ```
-hk-property-dashboard/
-├── app.py              # Main Streamlit application
-├── data_fetcher.py     # Data ingestion utilities
-├── policy_events.py    # Policy timeline data
-├── requirements.txt    # Python dependencies
-├── .gitignore
-└── README.md
-```
-
-## Key Insights
-
-- Hong Kong property prices peaked in 2021, declining ~20% since
-- Affordability ratio peaked at 23.2x income in 2021 (severely unaffordable = >5x)
-- Government removed all stamp duties in Feb 2024 to stimulate market
-- Prices continue to decline despite policy easing
-
-## Author
-
-[Alek Swiderski](https://alekswiderski.github.io)
