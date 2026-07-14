@@ -1,1062 +1,214 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Optimization: Building Efficient Investment Strategies</title>
-    <style>
-        :root {
-            --primary-color: #2a5298;
-            --secondary-color: #4d7cc7;
-            --background-color: #f8f9fa;
-            --text-color: #333;
-            --light-gray: #e9ecef;
-            --dark-gray: #6c757d;
-            --success-color: #28a745;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            padding-bottom: 3rem;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        
-        header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem 0;
-            margin-bottom: 2rem;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-        
-        h3 {
-            font-size: 1.4rem;
-            margin-top: 2rem;
-            margin-bottom: 0.8rem;
-            color: var(--secondary-color);
-        }
-        
-        p {
-            margin-bottom: 1.2rem;
-            font-size: 1.1rem;
-        }
-        
-        .lead {
-            font-size: 1.25rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-            color: var(--dark-gray);
-        }
-        
-        .author-info {
-            display: none; /* Hide the author info section */
-        }
-        
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            margin-right: 1rem;
-        }
-        
-        .author-details {
-            font-size: 0.9rem;
-        }
-        
-        .author-name {
-            font-weight: bold;
-            margin-bottom: 0.2rem;
-        }
-        
-        .publish-date {
-            color: var(--dark-gray);
-        }
-        
-        .image-container {
-            margin: 2rem 0;
-            text-align: center;
-        }
-        
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-        
-        .caption {
-            margin-top: 0.8rem;
-            color: var(--dark-gray);
-            font-style: italic;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-        
-        .highlight-box {
-            background-color: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 5px;
-            margin: 2rem 0;
-        }
-        
-        .highlight-box h3 {
-            margin-top: 0;
-        }
-        
-        .code-block {
-            background-color: #272822;
-            color: #f8f8f2;
-            padding: 1rem;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-        
-        ul, ol {
-            margin-bottom: 1.5rem;
-            padding-left: 2rem;
-        }
-        
-        li {
-            margin-bottom: 0.5rem;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-        }
-        
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        th {
-            background-color: var(--light-gray);
-            font-weight: bold;
-        }
-        
-        tr:nth-child(even) {
-            background-color: rgba(0, 0, 0, 0.02);
-        }
-        
-        .conclusion {
-            margin-top: 3rem;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .asset-explanation {
-            margin-bottom: 1.5rem;
-        }
-        
-        .key-insight {
-            border-left: 4px solid var(--success-color);
-            padding-left: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .figure-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-        
-        .figure-col {
-            flex: 1;
-            min-width: 300px;
-        }
-        
-        .interactive-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin: 2rem 0;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio optimisation | Alek Swiderski</title>
+    <meta name="description" content="A reproducible portfolio optimisation case study using seven ETFs, adjusted daily prices, and a long-only efficient frontier.">
+    <meta name="author" content="Alek Swiderski">
+    <meta name="theme-color" content="#17324d">
+    <link rel="canonical" href="https://alekswiderski.github.io/portfolio-optimization.html">
 
-        .sliders-section, .metrics-section {
-            padding: 1rem;
-        }
+    <meta property="og:title" content="Portfolio optimisation | Alek Swiderski">
+    <meta property="og:description" content="An in-sample test of risk, return, and concentration across seven ETFs.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://alekswiderski.github.io/portfolio-optimization.html">
 
-        .slider-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .slider-value {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: var(--light-gray);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            cursor: pointer;
-            border: none;
-        }
-
-        .allocation-warning {
-            margin: 1.5rem 0;
-            padding: 1rem;
-            background-color: var(--light-gray);
-            border-radius: 5px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .allocation-warning.warning {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .reset-btn, .export-btn {
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .reset-btn {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .reset-btn:hover {
-            background-color: var(--primary-color);
-        }
-
-        .export-btn {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .export-btn:hover {
-            background-color: #218838;
-        }
-
-        .metric-card {
-            background-color: var(--background-color);
-            padding: 1.5rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .metric-label {
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .chart-container {
-            margin: 2rem 0;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-
-            h3 {
-                font-size: 1.2rem;
-            }
-
-            .lead {
-                font-size: 1.1rem;
-            }
-
-            .interactive-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portfolio-optimization.css?v=20260714">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Portfolio Optimization: Building Efficient Investment Strategies</h1>
-            
-        </div>
+    <a class="skip-link" href="#analysis">Skip to analysis</a>
+
+    <header class="case-header">
+        <a class="wordmark" href="index.html" aria-label="Back to Alek Swiderski's portfolio">
+            <span class="wordmark-mark">AS</span>
+            <span>Alek Swiderski</span>
+        </a>
+        <nav aria-label="Case study navigation">
+            <a href="index.html#work">All projects</a>
+            <a href="portfolio_optimization.py">Python source</a>
+            <a href="https://github.com/alekswiderski/alekswiderski.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
     </header>
-    
-    <div class="container">
-        <h2>Introduction</h2>
-        <p>
-            Portfolio optimization is the scientific approach to creating the most efficient mix of assets to achieve the best possible returns for a level of risk. Understanding its principles can give investors an edge in navigating financial markets.
-        </p>
-        
-        <p>
-            I'll walk through the process of building a comprehensive portfolio optimization model from scratch using Python. I'll explore real-world data from a diverse set of ETFs, apply modern portfolio theory principles, and create portfolios for different risk tolerances.
-        </p>
-        
-        <h2>Understanding the Assets</h2>
-        
-        <p>
-            For my analysis, I selected seven ETFs that represent different asset classes and market segments:
-        </p>
-        
-        <div class="asset-explanation">
-            <h3>SPY - SPDR S&P 500 ETF Trust</h3>
-            <p>Tracks the S&P 500 index, representing large-cap U.S. equities. It's considered a core holding for many investors and serves as a benchmark for the broader U.S. stock market.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>QQQ - Invesco QQQ Trust</h3>
-            <p>Tracks the Nasdaq-100 Index, focused on the largest non-financial companies listed on the Nasdaq. It has a significant technology sector weighting and tends to be more growth-oriented.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>AGG - iShares Core U.S. Aggregate Bond ETF</h3>
-            <p>Provides broad exposure to U.S. investment grade bonds, including treasury, government agency, corporate, and mortgage-backed securities. The fixed income portion of our portfolio.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>GLD - SPDR Gold Shares</h3>
-            <p>Tracks the price of gold bullion. Gold is often considered a hedge against inflation and market uncertainty, providing portfolio diversification benefits.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>VNQ - Vanguard Real Estate ETF</h3>
-            <p>Offers exposure to US real estate investment trusts (REITs) and other real estate related investments, the real estate sector in our portfolio.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>VEA - Vanguard FTSE Developed Markets ETF</h3>
-            <p>Provides exposure to large and mid cap companies in developed markets outside the US, international diversification for our portfolio.</p>
-        </div>
-        
-        <div class="asset-explanation">
-            <h3>VWO - Vanguard FTSE Emerging Markets ETF</h3>
-            <p>Focuses on large and mid-cap companies in emerging market countries, offering exposure to higher growth economies.</p>
-        </div>
-        
-        <h2>Performance Analysis</h2>
-        
-        <p>
-            To understand the assets' behavior, I analyzed their historical price data from January 2018 to March 2025. This period captures various market cycles, including the COVID-19 crash and recovery.
-        </p>
-        
-        <div class="image-container">
-            <img src="Figure_3.png" alt="Normalized Asset Prices from 2018-2025">
-            <div class="caption">Figure 1: Normalized price performance of all assets (2018-2025)</div>
-        </div>
-        
-        <p>
-            The normalized price chart reveals several key insights:
-        </p>
-        
-        <ul>
-            <li><strong>QQQ</strong> was the top performer, with a total return of approximately 250% (18.5% annualized)</li>
-            <li><strong>SPY</strong> delivered solid performance with about 150% total return (13.5% annualized)</li>
-            <li><strong>GLD</strong> showed strong performance during market uncertainty, with about 110% total return (11% annualized)</li>
-            <li><strong>AGG</strong> provided stability but modest returns, with approximately 10% total return (1.4% annualized)</li>
-            <li>International equities (<strong>VEA</strong> and <strong>VWO</strong>) underperformed US markets during this period</li>
-        </ul>
-        
-        <h2>Risk and Return Characteristics</h2>
-        
-        <p>
-            Portfolio optimization requires understanding both returns and risk (volatility). We calculated annualized returns and risks for each asset:
-        </p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Asset</th>
-                    <th>Annualized Return</th>
-                    <th>Annualized Risk</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>SPY</td>
-                    <td>13.50%</td>
-                    <td>19.35%</td>
-                </tr>
-                <tr>
-                    <td>QQQ</td>
-                    <td>18.46%</td>
-                    <td>24.03%</td>
-                </tr>
-                <tr>
-                    <td>AGG</td>
-                    <td>1.40%</td>
-                    <td>5.97%</td>
-                </tr>
-                <tr>
-                    <td>GLD</td>
-                    <td>10.95%</td>
-                    <td>14.30%</td>
-                </tr>
-                <tr>
-                    <td>VNQ</td>
-                    <td>5.69%</td>
-                    <td>22.75%</td>
-                </tr>
-                <tr>
-                    <td>VEA</td>
-                    <td>4.78%</td>
-                    <td>18.19%</td>
-                </tr>
-                <tr>
-                    <td>VWO</td>
-                    <td>2.43%</td>
-                    <td>20.21%</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <div class="image-container">
-            <img src="Figure_2.png" alt="Risk vs Return Profile">
-            <div class="caption">Figure 2: Risk vs. Return profile of each asset</div>
-        </div>
-        
-        <p>
-            This visualization makes clear the risk-return tradeoffs: QQQ offers the highest returns but with substantial volatility, while AGG provides stability at the cost of lower returns. SPY and GLD offer attractive middle ground options with different risk-return profiles.
-        </p>
-        
-        <h2>Understanding Asset Correlations</h2>
-        
-        <p>
-            Correlation between assets is important for diversification. When assets move differently from each other, combining them can reduce overall portfolio risk.
-        </p>
-        
-        <div class="image-container">
-            <img src="Figure_1.png" alt="Asset Correlation Matrix">
-            <div class="caption">Figure 3: Correlation matrix showing relationships between assets</div>
-        </div>
-        
-        <p>
-            The correlation matrix reveals important relationships:
-        </p>
-        
-        <ul>
-            <li><strong>Strong correlation (0.93)</strong> between SPY and QQQ, limited diversification benefits between these two</li>
-            <li><strong>Low correlation (0.14)</strong> between AGG and equity ETFs, making bonds excellent diversifiers</li>
-            <li><strong>Low to moderate correlation (0.11-0.22)</strong> between GLD and equity ETFs, gold provides diversification benefits</li>
-            <li><strong>High correlation (0.7-0.87)</strong> among international and US equities, indicating global equity markets often move together</li>
-        </ul>
-        
-        <h2>Efficient Frontier and Optimal Portfolios</h2>
-        
-        <p>
-            Using modern portfolio theory, I can identify the optimal portfolios that offer the highest expected return for a level of risk. This forms the "efficient frontier."
-        </p>
-        
-        <div class="image-container">
-            <img src="Figure_4.png" alt="Portfolio Optimization Efficient Frontier">
-            <div class="caption">Figure 4: The efficient frontier with optimal portfolios highlighted</div>
-        </div>
-        
-        <p>
-            On this frontier, two portfolios are particularly important:
-        </p>
-        
-        <div class="highlight-box">
-            <h3>Maximum Sharpe Ratio Portfolio</h3>
-            <p>This portfolio offers the best risk-adjusted return, with an annualized return of 13.96% and volatility of 13.64%. It consists of:</p>
-            <ul>
-                <li>QQQ: 40.0%</li>
-                <li>GLD: 60.0%</li>
-            </ul>
-            <p>Sharpe Ratio: 0.88</p>
-        </div>
-        
-        <div class="highlight-box">
-            <h3>Minimum Volatility Portfolio</h3>
-            <p>This portfolio minimizes overall risk, with an annualized return of 2.06% and volatility of just 5.88%. It consists of:</p>
-            <ul>
-                <li>AGG: 92.8%</li>
-                <li>SPY: 3.9%</li>
-                <li>GLD: 1.8%</li>
-                <li>VWO: 1.4%</li>
-            </ul>
-            <p>Sharpe Ratio: 0.01</p>
-        </div>
-        
-        <h2>Portfolios for Different Risk Profiles</h2>
-        
-        <p>
-            In practice, investors have different risk tolerances. I created portfolios for conservative, balanced, and aggressive investors:
-        </p>
-        
-        <div class="figure-row">
-            <div class="figure-col">
-                <div class="image-container">
-                    <img src="Figure_5.png" alt="Asset Allocation by Risk Profile">
-                    <div class="caption">Figure 5: Asset allocation comparison across risk profiles</div>
-                </div>
+
+    <main id="analysis">
+        <section class="case-hero" aria-labelledby="page-title">
+            <div class="hero-copy">
+                <p class="eyebrow">06 / Finance analysis</p>
+                <h1 id="page-title">What portfolio optimisation found in seven ETFs</h1>
+                <p class="standfirst">I used daily adjusted prices to test how a long-only portfolio would have behaved from January 2018 to March 2025. The result is useful, but it is also very dependent on that period.</p>
             </div>
-            <div class="figure-col">
-                <div class="image-container">
-                    <img src="Figure_6.png" alt="Portfolio Allocations Pie Charts">
-                    <div class="caption">Figure 6: Detailed allocation pie charts for each portfolio</div>
-                </div>
+            <aside class="hero-note">
+                <p class="note-label">Main result</p>
+                <p>The highest in-sample Sharpe ratio came from a concentrated mix of QQQ and gold.</p>
+                <p class="note-small">That is a model output, not an investment recommendation.</p>
+            </aside>
+        </section>
+
+        <section class="method-strip" aria-label="Method summary">
+            <div><span id="observation-count">1,820</span><small>daily returns</small></div>
+            <div><span>7</span><small>ETFs</small></div>
+            <div><span>2.0%</span><small>risk-free rate</small></div>
+            <div><span>100%</span><small>fully invested</small></div>
+        </section>
+
+        <section class="case-section intro-grid" aria-labelledby="question-title">
+            <div>
+                <p class="section-number">01</p>
+                <h2 id="question-title">The question</h2>
             </div>
-        </div>
-        
-        <h3>Conservative Portfolio</h3>
-        <p>
-            Designed for investors prioritizing capital preservation with modest growth potential:
-        </p>
-        <ul>
-            <li>AGG: 72.1% - Provides stability and income</li>
-            <li>GLD: 15.3% - Offers inflation protection and diversification</li>
-            <li>SPY: 11.6% - Adds growth potential</li>
-            <li>QQQ: 1.0% - Small allocation to higher-growth assets</li>
-        </ul>
-        <p>Expected return: 4.44% | Volatility: 6.36%</p>
-        
-        <h3>Balanced Portfolio</h3>
-        <p>
-            Designed for investors seeking moderate growth with reasonable volatility:
-        </p>
-        <ul>
-            <li>AGG: 44.7% - Core stability component</li>
-            <li>GLD: 33.8% - Significant diversification element</li>
-            <li>QQQ: 15.7% - Growth driver</li>
-            <li>SPY: 5.8% - Additional equity exposure</li>
-        </ul>
-        <p>Expected return: 8.01% | Volatility: 8.52%</p>
-        
-        <h3>Aggressive Portfolio</h3>
-        <p>
-            Designed for growth-oriented investors comfortable with higher volatility:
-        </p>
-        <ul>
-            <li>GLD: 52.3% - Substantial allocation for both returns and diversification</li>
-            <li>QQQ: 30.3% - Core growth driver</li>
-            <li>AGG: 17.3% - Reduced but still significant stability component</li>
-            <li>SPY: 0.1% - Minimal allocation due to QQQ's stronger performance</li>
-        </ul>
-        <p>Expected return: 11.58% | Volatility: 11.46%</p>
-        
-        <div class="key-insight">
-            <p>The optimal portfolios consistently leverage AGG for stability, QQQ for growth, and GLD for both returns and diversification. International ETFs (VEA, VWO) and real estate (VNQ) were largely excluded from optimal portfolios due to their risk-return profiles being unfavorable during this period.</p>
-        </div>
-        
-        <h2>Implementation in Python</h2>
-        
-        <p>
-            This analysis was performed using Python with libraries such as pandas, numpy, matplotlib, and scipy. The optimization used modern portfolio theory principles to maximize the sharpe ratio (for the maximum Sharpe ratio portfolio) and minimize volatility (for the minimum volatility portfolio).
-        </p>
-        
-        <div class="code-block">
-            <pre>
-# Function to calculate portfolio performance
-def portfolio_performance(weights, mean_returns, cov_matrix):
-    returns = np.sum(mean_returns * weights)
-    std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-    return std, returns
+            <div class="prose">
+                <p>How much could diversification reduce risk across US shares, international shares, bonds, property and gold? I compared seven liquid ETFs and solved for the lowest volatility portfolio, the highest Sharpe ratio, and the efficient frontier between them.</p>
+                <p>The original notebook was lost. I rebuilt the analysis from the surviving export using the same tickers and date range. The figures and calculator now share one return series and one covariance matrix.</p>
+            </div>
+        </section>
 
-# Function to calculate negative Sharpe Ratio (for minimization)
-def negative_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate=0.02):
-    p_std, p_ret = portfolio_performance(weights, mean_returns, cov_matrix)
-    sharpe = (p_ret - risk_free_rate) / p_std
-    return -sharpe
-
-# Function to calculate portfolio volatility
-def portfolio_volatility(weights, mean_returns, cov_matrix):
-    return portfolio_performance(weights, mean_returns, cov_matrix)[0]
-            </pre>
-        </div>
-        
-        <h2>Interactive Portfolio Builder</h2>
-
-        <p>
-            Try building your own portfolio! Adjust the sliders below to see how different allocations affect your portfolio's expected return, risk, and Sharpe ratio.
-        </p>
-
-        <div class="interactive-container">
-            <div class="sliders-section">
-                <h3>Asset Allocation</h3>
-                <div id="sliders"></div>
-                <div class="allocation-warning" id="allocationWarning">Total allocation: <span id="totalAllocation">100</span>%</div>
-                <button onclick="resetSliders()" class="reset-btn">Reset to Equal Weight</button>
-                <button onclick="exportPortfolio()" class="export-btn">Export Portfolio</button>
+        <section class="case-section" aria-labelledby="frontier-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">02</p>
+                    <h2 id="frontier-title">Risk and return</h2>
+                </div>
+                <p>Each point on the line is the lowest volatility portfolio found for its target return. Short selling is excluded.</p>
             </div>
 
-            <div class="metrics-section">
-                <h3>Portfolio Metrics</h3>
-                <div class="metric-card">
-                    <div class="metric-label">Expected Annual Return</div>
-                    <div class="metric-value" id="portfolioReturn">0.00%</div>
+            <div class="chart-frame">
+                <div class="chart-key" aria-hidden="true">
+                    <span><i class="dot dot-frontier"></i>Efficient frontier</span>
+                    <span><i class="dot dot-asset"></i>Individual ETF</span>
+                    <span><i class="dot dot-model"></i>Model portfolio</span>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Annual Volatility (Risk)</div>
-                    <div class="metric-value" id="portfolioRisk">0.00%</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Sharpe Ratio</div>
-                    <div class="metric-value" id="sharpeRatio">0.00</div>
-                </div>
+                <div id="frontier-chart" class="frontier-chart"></div>
             </div>
-        </div>
 
-        <div class="chart-container">
-            <canvas id="efficientFrontierChart"></canvas>
-        </div>
+            <div class="portfolio-grid" aria-label="Portfolio comparisons">
+                <article class="portfolio-card featured">
+                    <p class="card-label">Highest Sharpe ratio</p>
+                    <div class="metric-pair">
+                        <div><span id="max-return">14.7%</span><small>return</small></div>
+                        <div><span id="max-risk">13.3%</span><small>volatility</small></div>
+                    </div>
+                    <div id="max-allocation" class="allocation-list"></div>
+                </article>
+                <article class="portfolio-card">
+                    <p class="card-label">Lowest volatility</p>
+                    <div class="metric-pair">
+                        <div><span id="min-return">2.2%</span><small>return</small></div>
+                        <div><span id="min-risk">5.9%</span><small>volatility</small></div>
+                    </div>
+                    <div id="min-allocation" class="allocation-list"></div>
+                </article>
+                <article class="portfolio-card">
+                    <p class="card-label">Equal weight</p>
+                    <div class="metric-pair">
+                        <div><span id="equal-return">9.3%</span><small>return</small></div>
+                        <div><span id="equal-risk">14.1%</span><small>volatility</small></div>
+                    </div>
+                    <p class="card-copy">A simple benchmark with 14.3% in every ETF. It carried more risk than the optimised portfolios for the return it produced.</p>
+                </article>
+            </div>
+        </section>
 
-        <div class="conclusion">
-            <h2>Key Takeaways and Investment Implications</h2>
+        <section class="case-section split-section" aria-labelledby="inputs-title">
+            <div class="section-heading vertical">
+                <div>
+                    <p class="section-number">03</p>
+                    <h2 id="inputs-title">What drove the result</h2>
+                </div>
+                <p>QQQ had the strongest annualised return in the sample. Bonds had the lowest volatility. Gold combined a relatively strong return with low correlation to shares.</p>
+            </div>
 
-            <p>
-                This portfolio optimization analysis offers several important insights for investors:
-            </p>
+            <div class="asset-table-wrap">
+                <table class="asset-table">
+                    <caption>Annualised arithmetic return and volatility, 2 January 2018 to 31 March 2025</caption>
+                    <thead>
+                        <tr><th scope="col">ETF</th><th scope="col">Exposure</th><th scope="col">Return</th><th scope="col">Volatility</th></tr>
+                    </thead>
+                    <tbody id="asset-table-body"></tbody>
+                </table>
+            </div>
+        </section>
 
-            <ol>
-                <li>
-                    <strong>Diversification is powerful</strong> - The optimal portfolios consistently included a mix of assets with different risk-return profiles and correlations. This diversification led to better risk-adjusted returns than any single asset could provide.
-                </li>
-                <li>
-                    <strong>Asset selection matters</strong> - Not all assets made it into the optimal portfolios. The optimization excluded assets with unfavorable risk-return profiles or high correlations with better performing alternatives.
-                </li>
-                <li>
-                    <strong>Gold played a surprisingly significant role</strong> - Despite being typically viewed as a hedge, GLD's strong performance and moderate correlations with equities made it a core component across all risk profiles.
-                </li>
-                <li>
-                    <strong>Risk tolerance should drive allocation</strong> - investors with different risk preferences can construct portfolios along the efficient frontier to align with their goals.
-                </li>
-                <li>
-                    <strong>US markets outperformed international markets</strong> - During this period, US equities offered superior risk-adjusted returns compared to international and emerging markets.
-                </li>
-            </ol>
+        <section class="case-section" aria-labelledby="correlation-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">04</p>
+                    <h2 id="correlation-title">Correlation</h2>
+                </div>
+                <p>Low correlation is why gold and bonds appear so often in the optimised allocations. The matrix below is calculated from the same daily returns used everywhere else on this page.</p>
+            </div>
+            <div class="matrix-scroll" tabindex="0" aria-label="Scrollable correlation matrix">
+                <div id="correlation-matrix" class="correlation-matrix"></div>
+            </div>
+        </section>
 
-            <p>
-                Modern portfolio theory provides a great framework for creating diversified investment portfolios for different risk levels and preferences. By understanding the risk-return characteristics and correlations of various assets, investors can build portfolios that maximize returns for their chosen level of risk.
-            </p>
+        <section class="case-section calculator-section" aria-labelledby="calculator-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">05</p>
+                    <h2 id="calculator-title">Build a mix</h2>
+                </div>
+                <p>Move any slider and the other weights rebalance automatically. The portfolio always remains long only and fully invested.</p>
+            </div>
 
-            <p>
-                In future analyses, I hope to extend this work by implementing dynamic rebalancing strategies, incorporating transaction costs, exploring alternative optimization objectives, or adding more asset classes.
-            </p>
-        </div>
-    </div>
+            <div class="calculator-shell">
+                <div class="controls-panel">
+                    <div class="preset-row" aria-label="Portfolio presets">
+                        <button type="button" data-preset="min_volatility">Lowest risk</button>
+                        <button type="button" data-preset="max_sharpe">Highest Sharpe</button>
+                        <button type="button" data-preset="equal_weight">Equal weight</button>
+                    </div>
+                    <div id="weight-controls" class="weight-controls"></div>
+                </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Asset data
-        const assets = {
-            'SPY': { name: 'SPY - S&P 500', return: 13.50, risk: 19.35 },
-            'QQQ': { name: 'QQQ - Nasdaq-100', return: 18.46, risk: 24.03 },
-            'AGG': { name: 'AGG - US Bonds', return: 1.40, risk: 5.97 },
-            'GLD': { name: 'GLD - Gold', return: 10.95, risk: 14.30 },
-            'VNQ': { name: 'VNQ - Real Estate', return: 5.69, risk: 22.75 },
-            'VEA': { name: 'VEA - Developed Markets', return: 4.78, risk: 18.19 },
-            'VWO': { name: 'VWO - Emerging Markets', return: 2.43, risk: 20.21 }
-        };
+                <aside class="calculator-output" aria-live="polite">
+                    <p class="output-label">Your portfolio</p>
+                    <div class="output-metric primary">
+                        <span id="custom-return">9.3%</span>
+                        <small>expected annual return</small>
+                    </div>
+                    <div class="output-row">
+                        <div class="output-metric"><span id="custom-risk">14.1%</span><small>volatility</small></div>
+                        <div class="output-metric"><span id="custom-sharpe">0.52</span><small>Sharpe ratio</small></div>
+                    </div>
+                    <div class="total-line"><span>Total weight</span><strong id="custom-total">100.0%</strong></div>
+                    <p class="output-caveat">Expected return means the historical daily average annualised over 252 trading days. It is not a forecast.</p>
+                </aside>
+            </div>
+        </section>
 
-        // Correlation matrix (simplified - using estimated values based on typical correlations)
-        const correlationMatrix = {
-            'SPY': { 'SPY': 1.00, 'QQQ': 0.93, 'AGG': 0.14, 'GLD': 0.15, 'VNQ': 0.75, 'VEA': 0.85, 'VWO': 0.75 },
-            'QQQ': { 'SPY': 0.93, 'QQQ': 1.00, 'AGG': 0.10, 'GLD': 0.11, 'VNQ': 0.70, 'VEA': 0.80, 'VWO': 0.70 },
-            'AGG': { 'SPY': 0.14, 'QQQ': 0.10, 'AGG': 1.00, 'GLD': 0.20, 'VNQ': 0.15, 'VEA': 0.12, 'VWO': 0.10 },
-            'GLD': { 'SPY': 0.15, 'QQQ': 0.11, 'AGG': 0.20, 'GLD': 1.00, 'VNQ': 0.22, 'VEA': 0.18, 'VWO': 0.20 },
-            'VNQ': { 'SPY': 0.75, 'QQQ': 0.70, 'AGG': 0.15, 'GLD': 0.22, 'VNQ': 1.00, 'VEA': 0.70, 'VWO': 0.65 },
-            'VEA': { 'SPY': 0.85, 'QQQ': 0.80, 'AGG': 0.12, 'GLD': 0.18, 'VNQ': 0.70, 'VEA': 1.00, 'VWO': 0.82 },
-            'VWO': { 'SPY': 0.75, 'QQQ': 0.70, 'AGG': 0.10, 'GLD': 0.20, 'VNQ': 0.65, 'VEA': 0.82, 'VWO': 1.00 }
-        };
+        <section class="case-section limits-section" aria-labelledby="limits-title">
+            <div>
+                <p class="section-number">06</p>
+                <h2 id="limits-title">Where I would be careful</h2>
+            </div>
+            <div class="prose">
+                <p>The model only knows this one sample. It rewards assets that performed well between 2018 and early 2025, which helps explain the heavy QQQ and gold allocation. A different start date, risk-free rate or return estimate would produce different weights.</p>
+                <p>There is no out-of-sample test, rebalancing rule, tax treatment or transaction cost assumption here. I would use this to inspect trade-offs. I would not copy the weights.</p>
+            </div>
+        </section>
 
-        const riskFreeRate = 2.0;
-        let weights = {};
-        let chart;
+        <section class="technical-note" aria-labelledby="method-title">
+            <div>
+                <p class="eyebrow">Method note</p>
+                <h2 id="method-title">How the page is calculated</h2>
+            </div>
+            <div>
+                <p>Adjusted closing prices come from Yahoo Finance through <code>yfinance</code>. Returns and covariance are annualised over 252 trading days. SLSQP solves the long-only portfolios with weights constrained to sum to 100%.</p>
+                <p><a href="portfolio_optimization.py">Read the Python source</a> or <a href="portfolio-optimization-data.js">inspect the generated data</a>.</p>
+            </div>
+        </section>
+    </main>
 
-        // Initialize sliders
-        function initializeSliders() {
-            const slidersDiv = document.getElementById('sliders');
-            const assetKeys = Object.keys(assets);
-            const equalWeight = (100 / assetKeys.length).toFixed(1);
+    <footer class="case-footer">
+        <a href="index.html">Back to all projects</a>
+        <p>Alek Swiderski / Data projects</p>
+    </footer>
 
-            assetKeys.forEach(ticker => {
-                weights[ticker] = parseFloat(equalWeight);
-
-                const container = document.createElement('div');
-                container.className = 'slider-container';
-
-                const label = document.createElement('div');
-                label.className = 'slider-label';
-                label.innerHTML = `
-                    <span>${assets[ticker].name}</span>
-                    <span class="slider-value" id="value-${ticker}">${equalWeight}%</span>
-                `;
-
-                const slider = document.createElement('input');
-                slider.type = 'range';
-                slider.min = '0';
-                slider.max = '100';
-                slider.value = equalWeight;
-                slider.step = '0.1';
-                slider.id = `slider-${ticker}`;
-                slider.addEventListener('input', (e) => updateWeight(ticker, e.target.value));
-
-                container.appendChild(label);
-                container.appendChild(slider);
-                slidersDiv.appendChild(container);
-            });
-
-            calculatePortfolio();
-            initializeChart();
-        }
-
-        // Update weight
-        function updateWeight(ticker, value) {
-            weights[ticker] = parseFloat(value);
-            document.getElementById(`value-${ticker}`).textContent = `${value}%`;
-            calculatePortfolio();
-            updateChart();
-        }
-
-        // Calculate portfolio metrics
-        function calculatePortfolio() {
-            const assetKeys = Object.keys(assets);
-
-            // Calculate total allocation
-            const totalAllocation = assetKeys.reduce((sum, ticker) => sum + weights[ticker], 0);
-            document.getElementById('totalAllocation').textContent = totalAllocation.toFixed(1);
-
-            // Update warning style
-            const warningDiv = document.getElementById('allocationWarning');
-            if (Math.abs(totalAllocation - 100) > 0.1) {
-                warningDiv.classList.add('warning');
-            } else {
-                warningDiv.classList.remove('warning');
-            }
-
-            // Normalize weights
-            const normalizedWeights = {};
-            assetKeys.forEach(ticker => {
-                normalizedWeights[ticker] = weights[ticker] / 100;
-            });
-
-            // Calculate expected return
-            const expectedReturn = assetKeys.reduce((sum, ticker) => {
-                return sum + (normalizedWeights[ticker] * assets[ticker].return);
-            }, 0);
-
-            // Calculate portfolio variance using covariance matrix
-            let portfolioVariance = 0;
-            assetKeys.forEach(ticker1 => {
-                assetKeys.forEach(ticker2 => {
-                    const weight1 = normalizedWeights[ticker1];
-                    const weight2 = normalizedWeights[ticker2];
-                    const std1 = assets[ticker1].risk / 100;
-                    const std2 = assets[ticker2].risk / 100;
-                    const correlation = correlationMatrix[ticker1][ticker2];
-                    const covariance = correlation * std1 * std2;
-                    portfolioVariance += weight1 * weight2 * covariance;
-                });
-            });
-
-            const portfolioRisk = Math.sqrt(portfolioVariance) * 100;
-
-            // Calculate Sharpe ratio
-            const sharpeRatio = (expectedReturn - riskFreeRate) / portfolioRisk;
-
-            // Update display
-            document.getElementById('portfolioReturn').textContent = `${expectedReturn.toFixed(2)}%`;
-            document.getElementById('portfolioRisk').textContent = `${portfolioRisk.toFixed(2)}%`;
-            document.getElementById('sharpeRatio').textContent = sharpeRatio.toFixed(2);
-
-            return { return: expectedReturn, risk: portfolioRisk, sharpe: sharpeRatio };
-        }
-
-        // Reset sliders to equal weight
-        function resetSliders() {
-            const assetKeys = Object.keys(assets);
-            const equalWeight = (100 / assetKeys.length).toFixed(1);
-
-            assetKeys.forEach(ticker => {
-                weights[ticker] = parseFloat(equalWeight);
-                document.getElementById(`slider-${ticker}`).value = equalWeight;
-                document.getElementById(`value-${ticker}`).textContent = `${equalWeight}%`;
-            });
-
-            calculatePortfolio();
-            updateChart();
-        }
-
-        // Export portfolio
-        function exportPortfolio() {
-            const assetKeys = Object.keys(assets);
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Asset,Ticker,Allocation (%),Expected Return (%),Risk (%)\n";
-
-            assetKeys.forEach(ticker => {
-                const allocation = weights[ticker].toFixed(2);
-                const ret = assets[ticker].return.toFixed(2);
-                const risk = assets[ticker].risk.toFixed(2);
-                csvContent += `${assets[ticker].name},${ticker},${allocation},${ret},${risk}\n`;
-            });
-
-            const metrics = calculatePortfolio();
-            csvContent += `\nPortfolio Metrics\n`;
-            csvContent += `Expected Return,${metrics.return.toFixed(2)}%\n`;
-            csvContent += `Risk (Volatility),${metrics.risk.toFixed(2)}%\n`;
-            csvContent += `Sharpe Ratio,${metrics.sharpe.toFixed(2)}\n`;
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "portfolio_allocation.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Initialize Chart.js
-        function initializeChart() {
-            const ctx = document.getElementById('efficientFrontierChart').getContext('2d');
-
-            // Generate efficient frontier points
-            const frontierPoints = generateEfficientFrontier();
-
-            // Individual asset points
-            const assetPoints = Object.keys(assets).map(ticker => ({
-                x: assets[ticker].risk,
-                y: assets[ticker].return,
-                label: ticker
-            }));
-
-            // Current portfolio point
-            const currentPortfolio = calculatePortfolio();
-
-            chart = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                    datasets: [
-                        {
-                            label: 'Efficient Frontier',
-                            data: frontierPoints,
-                            borderColor: 'rgba(42, 82, 152, 1)',
-                            backgroundColor: 'rgba(42, 82, 152, 0.1)',
-                            showLine: true,
-                            pointRadius: 0,
-                            borderWidth: 2
-                        },
-                        {
-                            label: 'Individual Assets',
-                            data: assetPoints,
-                            backgroundColor: 'rgba(77, 124, 199, 0.8)',
-                            pointRadius: 8,
-                            pointHoverRadius: 10
-                        },
-                        {
-                            label: 'Your Portfolio',
-                            data: [{ x: currentPortfolio.risk, y: currentPortfolio.return }],
-                            backgroundColor: 'rgba(40, 167, 69, 1)',
-                            pointRadius: 12,
-                            pointHoverRadius: 14,
-                            pointStyle: 'star'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Efficient Frontier - Risk vs. Return',
-                            font: { size: 16, weight: 'bold' }
-                        },
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.dataset.label || '';
-                                    const point = context.raw;
-                                    if (context.datasetIndex === 1) {
-                                        return `${assetPoints[context.dataIndex].label}: Return ${point.y.toFixed(2)}%, Risk ${point.x.toFixed(2)}%`;
-                                    }
-                                    return `${label}: Return ${point.y.toFixed(2)}%, Risk ${point.x.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Risk (Volatility %)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: 0,
-                            max: 30
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Expected Return (%)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: 0,
-                            max: 20
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update chart with new portfolio position
-        function updateChart() {
-            const currentPortfolio = calculatePortfolio();
-            chart.data.datasets[2].data = [{ x: currentPortfolio.risk, y: currentPortfolio.return }];
-            chart.update();
-        }
-
-        // Generate efficient frontier points (simplified - using random portfolios)
-        function generateEfficientFrontier() {
-            const points = [];
-            const numPortfolios = 1000;
-            const assetKeys = Object.keys(assets);
-
-            for (let i = 0; i < numPortfolios; i++) {
-                // Generate random weights
-                const randomWeights = {};
-                let sum = 0;
-                assetKeys.forEach(ticker => {
-                    randomWeights[ticker] = Math.random();
-                    sum += randomWeights[ticker];
-                });
-
-                // Normalize weights
-                assetKeys.forEach(ticker => {
-                    randomWeights[ticker] /= sum;
-                });
-
-                // Calculate return
-                const expectedReturn = assetKeys.reduce((acc, ticker) => {
-                    return acc + (randomWeights[ticker] * assets[ticker].return);
-                }, 0);
-
-                // Calculate risk
-                let portfolioVariance = 0;
-                assetKeys.forEach(ticker1 => {
-                    assetKeys.forEach(ticker2 => {
-                        const weight1 = randomWeights[ticker1];
-                        const weight2 = randomWeights[ticker2];
-                        const std1 = assets[ticker1].risk / 100;
-                        const std2 = assets[ticker2].risk / 100;
-                        const correlation = correlationMatrix[ticker1][ticker2];
-                        const covariance = correlation * std1 * std2;
-                        portfolioVariance += weight1 * weight2 * covariance;
-                    });
-                });
-
-                const portfolioRisk = Math.sqrt(portfolioVariance) * 100;
-
-                points.push({ x: portfolioRisk, y: expectedReturn });
-            }
-
-            // Filter to keep only efficient portfolios (highest return for each risk level)
-            points.sort((a, b) => a.x - b.x);
-            const efficientPoints = [];
-            let maxReturn = -Infinity;
-
-            points.forEach(point => {
-                if (point.y > maxReturn) {
-                    efficientPoints.push(point);
-                    maxReturn = point.y;
-                }
-            });
-
-            return efficientPoints;
-        }
-
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', initializeSliders);
-    </script>
+    <script src="portfolio-optimization-data.js?v=20260714"></script>
+    <script src="portfolio-optimization.js?v=20260714"></script>
 </body>
 </html>
