@@ -1,423 +1,240 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Value at Risk (VaR) Analysis - Alek Swiderski</title>
-    <meta name="description" content="A comprehensive Python implementation for portfolio risk assessment using Value at Risk (VaR) analysis with multiple calculation methods, backtesting, and stress testing.">
-    <meta name="keywords" content="VaR, Value at Risk, portfolio risk, Python, finance, risk management, Monte Carlo, backtesting">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <style>
-        /* Base styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        
-        header {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-radius: 5px;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            color: #2980b9;
-            margin-top: 30px;
-            border-left: 4px solid #3498db;
-            padding-left: 10px;
-        }
-        
-        h3 {
-            color: #16a085;
-            margin-top: 25px;
-        }
-        
-        .figure-container {
-            margin: 30px 0;
-            text-align: center;
-            background-color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .figure-container img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-        }
-        
-        .figure-caption {
-            margin-top: 10px;
-            font-style: italic;
-            color: #555;
-        }
-        
-        .project-intro {
-            background-color: #e8f4fd;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 25px;
-            border-left: 4px solid #3498db;
-        }
-        
-        .code-snippet {
-            background-color: #f8f8f8;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
-        .code-snippet pre {
-            margin: 0;
-            white-space: pre-wrap;
-        }
-        
-        .method-box {
-            background-color: #f1f9ff;
-            border-left: 4px solid #3498db;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .method-name {
-            font-weight: bold;
-            color: #2980b9;
-            margin-bottom: 5px;
-        }
-        
-        .key-point {
-            background-color: #e8f8f5;
-            border-left: 4px solid #1abc9c;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .implementation-note {
-            background-color: #fff8e1;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .stress-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .stress-table th, .stress-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .stress-table th {
-            background-color: #f2f2f2;
-        }
-        
-        .stress-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .conclusion {
-            background-color: #f5f5f5;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 40px;
-        }
-        
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 2rem;
-            border-radius: 5px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Value at Risk backtest | Alek Swiderski</title>
+    <meta name="description" content="A reproducible one-day Value at Risk analysis with historical, parametric, and Monte Carlo estimates plus rolling backtests.">
+    <meta name="author" content="Alek Swiderski">
+    <meta name="theme-color" content="#142535">
+    <link rel="canonical" href="https://alekswiderski.github.io/var-analysis.html">
+
+    <meta property="og:title" content="Value at Risk backtest | Alek Swiderski">
+    <meta property="og:description" content="Testing one-day portfolio loss estimates against the returns that followed.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://alekswiderski.github.io/var-analysis.html">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="var-analysis.css?v=20260714">
 </head>
 <body>
-    <a href="index.html" class="back-link">← Back to Portfolio</a>
-    
-    <header>
-        <h1>Understanding Value at Risk Analysis: A Python Implementation</h1>
+    <a class="skip-link" href="#analysis">Skip to analysis</a>
+
+    <header class="case-header">
+        <a class="wordmark" href="index.html" aria-label="Back to Alek Swiderski's portfolio">
+            <span class="wordmark-mark">AS</span>
+            <span>Alek Swiderski</span>
+        </a>
+        <nav aria-label="Case study navigation">
+            <a href="index.html#work">All projects</a>
+            <a href="var_analysis.py">Python source</a>
+            <a href="https://github.com/alekswiderski/alekswiderski.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
     </header>
 
-    <div class="project-intro">
-        <p>This project demonstrates how Python can be used to build a comprehensive Value at Risk (VaR) analysis framework. The implementation uses popular Python libraries including NumPy, Pandas, Matplotlib, Seaborn, and SciPy to create a flexible tool for portfolio risk assessment.</p>
-        
-        <p>The code provides a complete VaR analysis pipeline with robust visualization capabilities, multiple calculation methods, backtesting, and stress testing functionality. All results shown below are generated directly from the Python implementation.</p>
-    </div>
-    
-    <h2>What is Value at Risk (VaR) and Why It Matters</h2>
-    
-    <p>In the world of investing, one of the most important questions is: "How much money could I lose?" Value at Risk (VaR) is a tool that helps answer this question by estimating the maximum amount of money you might lose over a specific time period, with a certain level of confidence.</p>
-    
-    <p>Think of VaR as a financial weather forecast - it doesn't tell you exactly what will happen, but it gives you a good idea of what to prepare for. Just as a weather report might say "there's a 95% chance it won't rain more than 2 inches tomorrow," VaR might say "there's a 95% chance you won't lose more than $1,500 from your $100,000 investment tomorrow."</p>
-    
-    <h2>What This Analysis Shows</h2>
-    
-    <p>The analysis we ran looked at a diversified portfolio worth $100,000 invested across several major assets:</p>
-    <ul>
-        <li>Tech giants (Apple, Microsoft)</li>
-        <li>Banks (JPMorgan Chase, Goldman Sachs)</li>
-        <li>A financial sector ETF (XLF)</li>
-        <li>Treasury bonds (TLT)</li>
-        <li>Gold (GLD)</li>
-    </ul>
-    
-    <p>The portfolio is diversified to help reduce risk, with weights distributed fairly evenly across these assets.</p>
-    
-    <h2>Key Findings</h2>
-    
-    <h3>1. Portfolio Performance</h3>
-    
-    <p>The portfolio has performed very well over the analyzed period (January 2021 to March 2025), growing from $100,000 to around $180,000 - an impressive 80% total return. The annual return is approximately 15.5%, which is strong compared to historical market averages.</p>
-    
-    <p>However, this growth hasn't been without volatility - the chart shows several significant dips, particularly in 2022 when the portfolio briefly dropped back to its starting value.</p>
-    
-    <div class="figure-container">
-        <img src="var_example1.png" alt="Portfolio Value Over Time Chart" />
-        <div class="figure-caption">Figure 1: Portfolio Value Over Time (Initial: $100,000) from January 2021 to March 2025</div>
-    </div>
-    
-    <h3>2. Risk Assessment</h3>
-    
-    <p>The analysis shows that on a typical day, with 95% confidence:</p>
-    <ul>
-        <li><strong>VaR (Historical method)</strong>: You wouldn't expect to lose more than about $1,509 in a single day</li>
-        <li><strong>VaR (Parametric method)</strong>: You wouldn't expect to lose more than about $1,475 in a single day</li>
-        <li><strong>VaR (Monte Carlo method)</strong>: You wouldn't expect to lose more than about $1,464 in a single day</li>
-    </ul>
-    
-    <p>All three methods are different ways to calculate the same thing, and they all arrive at similar results, which suggests the estimate is reliable. This represents about 1.5% of the total portfolio value.</p>
-    
-    <div class="figure-container">
-        <img src="var_example2.png" alt="Historical VaR with Confidence Intervals" />
-        <div class="figure-caption">Figure 2: Historical VaR with 95% Confidence Intervals, showing the distribution of daily returns</div>
-    </div>
-    
-    <h3>Understanding the Three VaR Methods</h3>
-    
-    <div class="method-box">
-        <div class="method-name">Historical Method (The "What Actually Happened" Approach)</div>
-        <p>Imagine looking through your investment's past performance and noting all the daily gains and losses. The Historical VaR essentially says: "Based on what happened in the past, on 95% of days, we didn't lose more than $1,509." It's like checking the last 100 days of weather to predict tomorrow, assuming similar patterns will continue.</p>
-    </div>
-    
-    <div class="method-box">
-        <div class="method-name">Parametric Method (The "Bell Curve" Approach)</div>
-        <p>This method assumes investment returns follow a bell-shaped curve (normal distribution). After calculating the average return and how much returns typically vary (standard deviation), it uses statistical formulas to estimate the worst-case scenario at your specified confidence level. It's like knowing the average rainfall and typical variation to predict the maximum rainfall tomorrow with 95% confidence.</p>
-    </div>
-    
-    <div class="method-box">
-        <div class="method-name">Monte Carlo Method (The "What If" Simulator)</div>
-        <p>This approach runs thousands of simulations of possible future scenarios based on the investment's statistical properties. Imagine rolling dice 10,000 times to see all possible outcomes. The Monte Carlo method creates thousands of possible "alternate universes" for your portfolio and then identifies the loss threshold that is only exceeded in 5% of these simulations.</p>
-    </div>
+    <main id="analysis">
+        <section class="case-hero" aria-labelledby="page-title">
+            <div class="hero-copy">
+                <p class="eyebrow">07 / Risk measurement</p>
+                <h1 id="page-title">A one-day loss estimate, tested against what happened next</h1>
+                <p class="standfirst">I calculated Value at Risk for a hypothetical $100,000 portfolio, then ran the estimate through a rolling backtest from January 2022 to March 2025.</p>
+            </div>
+            <aside class="hero-result">
+                <p class="result-kicker">95% historical VaR</p>
+                <p class="result-number"><span id="hero-breach-count">47</span><small>breaches</small></p>
+                <p>across <span id="hero-test-days">812</span> test days</p>
+                <p class="result-note">A 5.8% breach rate against an expected 5.0%.</p>
+            </aside>
+        </section>
 
-    <h3>Beyond VaR: Conditional VaR (CVaR)</h3>
+        <section class="method-strip" aria-label="Method summary">
+            <div><span id="observation-count">1,064</span><small>daily returns</small></div>
+            <div><span>7</span><small>assets</small></div>
+            <div><span>$100k</span><small>starting value</small></div>
+            <div><span>252</span><small>day rolling window</small></div>
+        </section>
 
-    <p>While VaR tells us the threshold we're unlikely to exceed, it doesn't tell us <em>how bad things could get</em> if we do exceed it. This is where <strong>Conditional VaR</strong> (also called Expected Shortfall or CVaR) comes in.</p>
+        <section class="case-section setup-grid" aria-labelledby="setup-title">
+            <div>
+                <p class="section-number">01</p>
+                <h2 id="setup-title">The setup</h2>
+            </div>
+            <div class="prose">
+                <p>The example portfolio resets to its target weights each trading day. Half of it sits in JPMorgan, Goldman Sachs and the XLF financial sector ETF. Apple and Microsoft make up another 30%, with the balance in long dated US Treasuries and gold.</p>
+                <p>This is a concentrated teaching example. It should not be read as a diversified portfolio recommendation.</p>
+                <div id="allocation-bar" class="allocation-bar" aria-label="Portfolio weights"></div>
+                <div id="allocation-key" class="allocation-key"></div>
+            </div>
+        </section>
 
-    <div class="method-box">
-        <div class="method-name">CVaR: The "Average Disaster" Metric</div>
-        <p>CVaR answers the question: "If we do have a bad day that exceeds our VaR threshold, how much should we expect to lose on average?" For this portfolio, while VaR at 95% confidence is around $1,500, the CVaR is typically 20-30% higher - meaning on those worst 5% of days, losses average around $1,900-2,000.</p>
-        <p><strong>Why it matters:</strong> CVaR is now required by Basel III banking regulations because it better captures "tail risk" - the risk of extreme losses. VaR can miss dangerous situations where losses beyond the threshold are catastrophic.</p>
-    </div>
+        <section class="case-section" aria-labelledby="estimate-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">02</p>
+                    <h2 id="estimate-title">Three ways to estimate the same loss threshold</h2>
+                </div>
+                <p>At 95% confidence, each method estimates the one-day loss that should be exceeded on roughly one day in twenty.</p>
+            </div>
 
-    <h3>3. Backtesting Results</h3>
-    
-    <p>The VaR models were tested against historical data to see if they're accurate. The results show:</p>
-    <ul>
-        <li>The historical method predicted that losses would exceed the VaR threshold about 5% of the time, and in reality, it happened 4.88% of the time</li>
-        <li>The parametric and Monte Carlo methods both had breaches 5.66% of the time versus the expected 5%</li>
-    </ul>
-    
-    <p>These results are very close to expectations, and all methods passed the Kupiec test (a statistical test to verify the model's accuracy).</p>
-    
-    <h3>4. VaR Changes Over Time</h3>
-    
-    <p>The analysis also tracks how risk levels have changed throughout the analysis period.</p>
-    
-    <div class="figure-container">
-        <img src="var_example3.png" alt="Historical VaR over Time" />
-        <div class="figure-caption">Figure 3: Historical VaR over Time (95% Confidence), showing how the maximum expected daily loss has changed</div>
-    </div>
-    
-    <div class="key-point">
-        <p>An interesting observation from this chart is that VaR was much higher during 2022-2023 (around $2,000-$2,200) than it is in early 2025 (around $1,200). This means that even though the portfolio value has grown substantially, the daily risk has actually decreased - a positive sign for the investment strategy.</p>
-    </div>
-    
-    <h3>5. Stress Testing</h3>
-    
-    <p>The analysis also shows what would happen to this portfolio during extreme market events:</p>
-    
-    <table class="stress-table">
-        <thead>
-            <tr>
-                <th>Scenario</th>
-                <th>Portfolio Impact</th>
-                <th>Remaining Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>2008 Financial Crisis</td>
-                <td>-45% ($45,000)</td>
-                <td>$55,000</td>
-            </tr>
-            <tr>
-                <td>2020 COVID Crash</td>
-                <td>-35% ($35,000)</td>
-                <td>$65,000</td>
-            </tr>
-            <tr>
-                <td>Tech Bubble Burst</td>
-                <td>-30% ($30,000)</td>
-                <td>$70,000</td>
-            </tr>
-            <tr>
-                <td>Moderate Recession</td>
-                <td>-25% ($25,000)</td>
-                <td>$75,000</td>
-            </tr>
-            <tr>
-                <td>2018 December Selloff</td>
-                <td>-20% ($20,000)</td>
-                <td>$80,000</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <h2>Python Implementation Overview</h2>
+            <div class="method-cards">
+                <article>
+                    <p class="card-label">Historical</p>
+                    <p class="card-value" id="historical-var">$1,555</p>
+                    <p>Uses the fifth percentile of the observed portfolio returns.</p>
+                </article>
+                <article>
+                    <p class="card-label">Parametric</p>
+                    <p class="card-value" id="parametric-var">$1,532</p>
+                    <p>Fits a normal distribution using the sample mean and standard deviation.</p>
+                </article>
+                <article>
+                    <p class="card-label">Monte Carlo</p>
+                    <p class="card-value" id="monte-carlo-var">$1,545</p>
+                    <p>Samples 100,000 returns from that same fitted normal distribution.</p>
+                </article>
+            </div>
 
-    <p>This VaR analysis tool is implemented as a Python class called <code>VaRAnalysis</code> that provides a comprehensive framework for assessing portfolio risk. Here's a look at the key components:</p>
-    
-    <h3>Key Features of the Python Implementation</h3>
-    
-    <ul>
-        <li><strong>Data Acquisition:</strong> Automatic download of historical price data using Yahoo Finance API</li>
-        <li><strong>Multiple VaR Methods:</strong> Implementation of historical, parametric, and Monte Carlo approaches</li>
-        <li><strong>Backtesting Framework:</strong> Statistical validation of VaR predictions</li>
-        <li><strong>Visualization Tools:</strong> Comprehensive plotting functions for returns, correlations, and VaR metrics</li>
-        <li><strong>Stress Testing:</strong> Simulations of portfolio behavior under extreme market conditions</li>
-        <li><strong>Report Generation:</strong> Formatted console reports and CSV export</li>
-    </ul>
-    
-    <h3>Example Python Usage</h3>
-    
-    <pre class="code-snippet"><code class="language-python"># Basic usage example
-from var_analysis import VaRAnalysis
+            <div class="chart-frame">
+                <div class="chart-title-row">
+                    <div>
+                        <p class="chart-kicker">Observed daily returns</p>
+                        <h3>The left tail sets historical VaR</h3>
+                    </div>
+                    <p>Red bars fall beyond the 95% historical threshold.</p>
+                </div>
+                <div id="distribution-chart" class="svg-chart"></div>
+            </div>
+            <p class="plain-note">The close results do not provide three independent confirmations. Monte Carlo and parametric VaR use the same normal model, so they should be similar.</p>
+        </section>
 
-# Initialize with portfolio data
-var_analysis = VaRAnalysis(
-    assets=['AAPL', 'MSFT', 'JPM', 'GS', 'XLF', 'TLT', 'GLD'],
-    weights=[0.15, 0.15, 0.15, 0.15, 0.2, 0.1, 0.1],
-    investment=100000
-)
+        <section class="case-section" aria-labelledby="backtest-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">03</p>
+                    <h2 id="backtest-title">Did the estimate hold up?</h2>
+                </div>
+                <p>Each test day uses only the previous 252 returns. A breach occurs when the next loss is larger than the estimate.</p>
+            </div>
 
-# Run comprehensive analysis
-var_analysis.run_comprehensive_analysis()
+            <div class="backtest-grid">
+                <article>
+                    <p class="card-label">Historical model</p>
+                    <p class="backtest-rate" id="historical-breach-rate">5.8%</p>
+                    <p><span id="historical-breaches">47</span> breaches across 812 test days.</p>
+                    <p class="test-result" id="historical-kupiec">Kupiec p-value: 0.314</p>
+                </article>
+                <article>
+                    <p class="card-label">Parametric model</p>
+                    <p class="backtest-rate" id="parametric-breach-rate">5.9%</p>
+                    <p><span id="parametric-breaches">48</span> breaches across 812 test days.</p>
+                    <p class="test-result" id="parametric-kupiec">Kupiec p-value: 0.246</p>
+                </article>
+                <aside>
+                    <p class="card-label">How to read this</p>
+                    <p>Neither breach count is statistically inconsistent with a 5% rate at the 5% significance level. That is a narrow result. It does not prove that the models are accurate in every market regime.</p>
+                </aside>
+            </div>
 
-# Calculate VaR using different methods
-hist_var, _ = var_analysis.historical_var(confidence_level=0.95)
-param_var, _ = var_analysis.parametric_var(confidence_level=0.95)
-mc_var, _ = var_analysis.monte_carlo_var(confidence_level=0.95)
+            <div class="chart-frame backtest-frame">
+                <div class="chart-title-row">
+                    <div>
+                        <p class="chart-kicker">Rolling historical model</p>
+                        <h3>VaR moved with the previous year's volatility</h3>
+                    </div>
+                    <div class="mini-key" aria-hidden="true"><span><i class="line-key"></i>VaR</span><span><i class="dot-key"></i>Breach</span></div>
+                </div>
+                <div id="backtest-chart" class="svg-chart"></div>
+            </div>
+        </section>
 
-print(f"Historical VaR (95%): ${hist_var:.2f}")
-print(f"Parametric VaR (95%): ${param_var:.2f}")
-print(f"Monte Carlo VaR (95%): ${mc_var:.2f}")
+        <section class="case-section tail-grid" aria-labelledby="tail-title">
+            <div>
+                <p class="section-number">04</p>
+                <h2 id="tail-title">What VaR leaves out</h2>
+                <p class="side-copy">VaR marks the start of the tail. Expected Shortfall asks how large losses were once that threshold had already been crossed.</p>
+            </div>
+            <div>
+                <div class="tail-metrics">
+                    <article><p class="card-label">95% historical VaR</p><p id="tail-var">$1,555</p></article>
+                    <article><p class="card-label">95% Expected Shortfall</p><p id="tail-es">$2,124</p></article>
+                    <article><p class="card-label">Maximum drawdown</p><p id="max-drawdown">25.6%</p></article>
+                </div>
+                <h3 class="subheading">Five worst days in the sample</h3>
+                <div id="worst-days" class="worst-days"></div>
+            </div>
+        </section>
 
-# Create visualizations
-var_analysis.plot_portfolio_performance()
-var_analysis.plot_var_with_ci(method='historical')
-var_analysis.plot_var_over_time(method='historical')</code></pre>
-    
-    <div class="implementation-note">
-        <p><strong>Technical Note:</strong> The implementation uses Pandas for data manipulation, NumPy for numerical operations, Matplotlib and Seaborn for visualization, and SciPy for statistical functions. The backtesting framework validates VaR models using the Kupiec test to ensure statistical accuracy.</p>
-    </div>
+        <section class="case-section calculator-section" aria-labelledby="calculator-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">05</p>
+                    <h2 id="calculator-title">Change the assumptions</h2>
+                </div>
+                <p>VaR scales with the portfolio value and rises quickly at higher confidence levels.</p>
+            </div>
 
-    <div class="implementation-note" style="margin-top: 20px;">
-        <p><strong>Download:</strong> You can download the Python implementation here: <a href="var_analysis.py" download style="color: #2980b9; font-weight: bold;">var_analysis.py</a></p>
-    </div>
+            <div class="calculator-shell">
+                <div class="calculator-controls">
+                    <fieldset>
+                        <legend>Confidence level</legend>
+                        <div class="confidence-buttons">
+                            <button type="button" data-confidence="0.9">90%</button>
+                            <button type="button" data-confidence="0.95" class="active">95%</button>
+                            <button type="button" data-confidence="0.975">97.5%</button>
+                            <button type="button" data-confidence="0.99">99%</button>
+                        </div>
+                    </fieldset>
+                    <label class="investment-control" for="investment-slider">
+                        <span>Portfolio value</span>
+                        <strong id="investment-value">$100,000</strong>
+                    </label>
+                    <input id="investment-slider" type="range" min="25000" max="500000" step="5000" value="100000">
+                </div>
+                <div class="calculator-output" aria-live="polite">
+                    <table>
+                        <thead><tr><th>Method</th><th>VaR</th><th>Expected Shortfall</th></tr></thead>
+                        <tbody>
+                            <tr><th>Historical</th><td id="calc-historical-var"></td><td id="calc-historical-es"></td></tr>
+                            <tr><th>Parametric</th><td id="calc-parametric-var"></td><td id="calc-parametric-es"></td></tr>
+                            <tr><th>Monte Carlo</th><td id="calc-monte-var"></td><td id="calc-monte-es"></td></tr>
+                        </tbody>
+                    </table>
+                    <p id="calculator-caption">One-day loss estimates at 95% confidence.</p>
+                </div>
+            </div>
+        </section>
 
-    <h2>Limitations of VaR</h2>
+        <section class="case-section limits-grid" aria-labelledby="limits-title">
+            <div>
+                <p class="section-number">06</p>
+                <h2 id="limits-title">What I would not conclude</h2>
+            </div>
+            <div class="prose">
+                <p>A successful coverage test does not make VaR a worst-case loss estimate. The worst observed day lost 3.7%, more than twice the 95% VaR threshold. Losses beyond the threshold still matter.</p>
+                <p>The model also assumes that the next day resembles the selected history. Correlations and volatility can change quickly. The example rebalances every day, ignores costs and taxes, and contains overlapping financial exposure through two bank shares and XLF.</p>
+            </div>
+        </section>
 
-    <p>While VaR is widely used and useful, it's important to understand its limitations. These shortcomings contributed to the 2008 financial crisis when many institutions relied too heavily on VaR models that understated risk.</p>
+        <section class="technical-note" aria-labelledby="method-title">
+            <div>
+                <p class="eyebrow">Method note</p>
+                <h2 id="method-title">How the page is calculated</h2>
+            </div>
+            <div>
+                <p>Adjusted closing prices come from Yahoo Finance through <code>yfinance</code>. The analysis uses simple daily returns from 4 January 2021 to 31 March 2025. Rolling backtests use a 252-day lookback and the Kupiec unconditional coverage test.</p>
+                <p><a href="var_analysis.py">Read the Python source</a> or <a href="var-analysis-data.js">inspect the generated data</a>.</p>
+            </div>
+        </section>
+    </main>
 
-    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
-        <p><strong>1. VaR doesn't measure worst-case losses.</strong> A 95% VaR of $1,500 only tells you that losses will be less than $1,500 on 95% of days. On the other 5% of days, you could lose $2,000, $5,000, or even more. VaR is silent on how bad the bad days can get.</p>
-    </div>
-
-    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
-        <p><strong>2. It assumes the past predicts the future.</strong> All VaR methods rely on historical data to estimate future risk. During unprecedented events (like COVID-19 or the 2008 crisis), historical patterns may not apply. Markets can behave in ways never seen before.</p>
-    </div>
-
-    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
-        <p><strong>3. Correlations change during crises.</strong> Assets that normally move independently often crash together during market panics. VaR models using normal-period correlations underestimate risk during exactly the times when risk matters most.</p>
-    </div>
-
-    <div class="key-point" style="background-color: #fdf2e9; border-left-color: #e67e22;">
-        <p><strong>4. The normal distribution assumption is flawed.</strong> Real market returns have "fat tails" - extreme events occur more frequently than a bell curve predicts. The parametric VaR method can significantly underestimate the probability of large losses.</p>
-    </div>
-
-    <p>For these reasons, sophisticated risk managers use VaR alongside other measures like CVaR (Expected Shortfall), stress testing, and scenario analysis. VaR is one tool in the toolkit, not a complete picture of risk.</p>
-
-    <h2>What This All Means</h2>
-    
-    <div class="conclusion">
-        <p><strong>1. Day-to-Day Risk:</strong> On a typical bad day, you might expect to lose around $1,500 (1.5% of your initial investment), but it's unlikely you'd lose more than that.</p>
-        
-        <p><strong>2. Model Reliability:</strong> The VaR models are working as expected, which means their predictions are trustworthy for this portfolio.</p>
-        
-        <p><strong>3. Balanced Risk/Return:</strong> With an annual return of 15.5% and annual volatility of 14.83%, the portfolio has a favorable risk-return profile (shown by the Sharpe ratio of 1.04, which is good).</p>
-        
-        <p><strong>4. Extreme Event Preparedness:</strong> While the day-to-day risk is relatively small, major market events could cause substantial losses. However, over the analyzed period, the portfolio recovered from dips and continued to grow.</p>
-        
-        <p><strong>Bottom Line:</strong> This VaR analysis gives us a way to quantify investment risk in concrete dollar terms. It tells us that this particular portfolio has been performing well with manageable day-to-day risk, but investors should still be prepared for potential significant losses during market crises. The analysis confirms that the portfolio's diversification across different types of assets (tech, banking, bonds, gold) is working as intended to balance growth with protection against excessive losses.</p>
-    </div>
-
-    <footer>
-        <p>© 2025 Alek Swiderski. All Rights Reserved.</p>
-        <p><a href="index.html" style="color: white; text-decoration: underline;">Back to Portfolio</a></p>
+    <footer class="case-footer">
+        <a href="index.html">Back to all projects</a>
+        <p>Alek Swiderski / Data projects</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="var-analysis-data.js?v=20260714"></script>
+    <script src="var-analysis.js?v=20260714"></script>
 </body>
 </html>
